@@ -8,6 +8,7 @@ class BaseMenu(BaseModel):
     title: Optional[str]
     description: Optional[str]
     dishes_count: Optional[int]
+    submenus_count: Optional[int]
     class Config:
         #автоматически сирелизует обьекты склалхими в джейсон
         orm_mode=True
@@ -24,20 +25,18 @@ class MenuUpdate(BaseMenu):
 
 class BaseSubmenu(BaseModel):
     id: Optional[int]
-    title: str
-    description: str
-
+    title: Optional[str]
+    description: Optional[str]
+    dishes_count: Optional[int]
     class Config:
         orm_mode=True
 
 
+class Dish(BaseModel):
+    id: Optional[int]
+    title: Optional[str]
+    description: Optional[str]
+    price: Optional[float]
 
-#
-# class Dish(BaseModel):
-#     id: int
-#     title: str
-#     description: str
-#     price: int
-#
-#     class Config:
-#         orm_mode=True
+    class Config:
+        orm_mode=True

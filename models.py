@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, Integer, ForeignKey, DECIMAL
 from sqlalchemy.orm import relationship
 
 
@@ -11,6 +11,7 @@ class Menu(BASE):
     title = Column(String(200), nullable=False, unique=True)
     description = Column(String())
     submenus = relationship("Submenu", cascade="all, delete-orphan")
+    submenus_count = Column(Integer, default=0)
     dishes_count = Column(Integer, default=0)
 
 
@@ -21,17 +22,16 @@ class Submenu(BASE):
     description = Column(String)
     menu_id = Column(Integer, ForeignKey('menu.id'))
     menus = relationship("Menu")
-    #dishes_count = Column(Integer)
+    dishes_count = Column(Integer, default=0)
+    dish = relationship("Dish")
 
 
-
-
-
-
-
-# class Dish(BASE):
-#     __tablename__ = 'dish'
-#     id = Column(Integer, primary_key=True)
-#     title = Column(String(200))
-#     description = Column(String)
-#     price = Column(Integer)
+class Dish(BASE):
+    __tablename__ = 'dish'
+    id = Column(Integer, primary_key=True)
+    title = Column(String(200))
+    description = Column(String)
+    price = Column(DECIMAL)
+    submenu_id = Column(Integer, ForeignKey('submenu.id'))
+    menu_id = Column(Integer, ForeignKey('menu.id'))
+    submenu = relationship('Submenu')
