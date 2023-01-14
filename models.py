@@ -7,7 +7,7 @@ from database import BASE
 
 class Menu(BASE):
     __tablename__ = 'menu'
-    id = Column(Integer(),primary_key=True, index=True)
+    id = Column(Integer(), primary_key=True, index=True)
     title = Column(String(200), nullable=False, unique=True)
     description = Column(String())
     submenus = relationship("Submenu", cascade="all, delete-orphan")
@@ -29,11 +29,9 @@ class Submenu(BASE):
 class Dish(BASE):
     __tablename__ = 'dish'
     id = Column(Integer, primary_key=True)
-    # как сделать, чтобы одно и тоже блюдо не могло быть в разных подменю?
     title = Column(String(200), unique=True)
     description = Column(String)
     price = Column(Float(round(2)))
-
     submenu_id = Column(Integer, ForeignKey('submenu.id'))
     menu_id = Column(Integer, ForeignKey('menu.id'))
     submenu = relationship('Submenu')
