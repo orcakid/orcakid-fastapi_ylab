@@ -1,3 +1,5 @@
 # Homework for ***Ylab***
 _______
-There could be a description...
++Create Database(python create_db.py)
++Start server(uvirorn main:app --reload)
++Test
