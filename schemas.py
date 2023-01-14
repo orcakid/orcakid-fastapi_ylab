@@ -1,6 +1,6 @@
+
 from pydantic import BaseModel
 from typing import Optional
-
 
 # используется для сериализации или изменения обьектов, так как идет валидация типов
 class BaseMenu(BaseModel):
@@ -19,9 +19,6 @@ class PatchMenu(BaseMenu):
     description: str
     dishes_count: Optional[int]
 
-class MenuUpdate(BaseMenu):
-    dishes_count: int
-
 
 class BaseSubmenu(BaseModel):
     id: Optional[int]
@@ -31,12 +28,16 @@ class BaseSubmenu(BaseModel):
     class Config:
         orm_mode=True
 
+class PatchSubmenu(BaseSubmenu):
+    title: Optional[str]
+    description: Optional[str]
+
 
 class Dish(BaseModel):
     id: Optional[int]
     title: Optional[str]
     description: Optional[str]
-    price: Optional[float]
+    price: Optional[str]
 
     class Config:
         orm_mode=True

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, DECIMAL
+from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 
@@ -18,7 +18,7 @@ class Menu(BASE):
 class Submenu(BASE):
     __tablename__ = 'submenu'
     id = Column(Integer, primary_key=True)
-    title = Column(String(200))
+    title = Column(String(200), nullable=False, unique=True)
     description = Column(String)
     menu_id = Column(Integer, ForeignKey('menu.id'))
     menus = relationship("Menu")
@@ -29,9 +29,11 @@ class Submenu(BASE):
 class Dish(BASE):
     __tablename__ = 'dish'
     id = Column(Integer, primary_key=True)
-    title = Column(String(200))
+    # как сделать, чтобы одно и тоже блюдо не могло быть в разных подменю?
+    title = Column(String(200), unique=True)
     description = Column(String)
-    price = Column(DECIMAL)
+    price = Column(Float(round(2)))
+
     submenu_id = Column(Integer, ForeignKey('submenu.id'))
     menu_id = Column(Integer, ForeignKey('menu.id'))
     submenu = relationship('Submenu')
