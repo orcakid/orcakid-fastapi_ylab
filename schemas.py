@@ -40,3 +40,8 @@ class Dish(BaseModel):
 
     class Config:
         orm_mode=True
+
+class UpgradeDish(Dish):
+    title: str
+    description: str
+    price: float

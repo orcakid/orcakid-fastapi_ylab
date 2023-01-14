@@ -1,9 +1,10 @@
 from typing import List
+
 from fastapi import FastAPI, status, HTTPException
 
 import models
 from database import Session_local
-from schemas import BaseMenu, BaseSubmenu, PatchMenu, Dish
+from schemas import BaseMenu, BaseSubmenu, PatchMenu, Dish, UpgradeDish
 
 app = FastAPI()
 
@@ -20,9 +21,9 @@ def get_menus():
 
 @app.get('/api/v1/menus/{menu_id}', response_model=BaseMenu, status_code=status.HTTP_200_OK)
 def get_menu(menu_id: int):
-    menu = db.query(models.Menu).filter(models.Menu.id==menu_id).first()
+    menu = db.query(models.Menu).filter(models.Menu.id == menu_id).first()
     if menu is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="menu not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="menu not found")
     return menu
 
 
@@ -30,7 +31,7 @@ def get_menu(menu_id: int):
 def create_menu(menu: BaseMenu):
     res = db.query(models.Submenu).filter(models.Submenu.menu_id == menu.id).all()
     new_menu = models.Menu(
-        #решает проблему сравнивания int в pk модели и id(str) на сервере
+        # решает проблему сравнивания int в pk модели и id(str) на сервере
         id=str(menu.id or 0),
         title=menu.title,
         description=menu.description,
@@ -49,7 +50,7 @@ def create_menu(menu: BaseMenu):
 
 @app.patch('/api/v1/menus/{menu_id}', response_model=PatchMenu)
 def update_menu(menu_id: int, menu: BaseMenu):
-    menu_to_update = db.query(models.Menu).filter(models.Menu.id==menu_id).one_or_none()
+    menu_to_update = db.query(models.Menu).filter(models.Menu.id == menu_id).one_or_none()
     if menu_to_update is None:
         return []
     menu_to_update.id = menu_id
@@ -63,7 +64,7 @@ def update_menu(menu_id: int, menu: BaseMenu):
 
 @app.delete('/api/v1/menus/{menu_id}', response_model=BaseMenu)
 def delete_menu(menu_id: int):
-    #При удалении меню удаляются вместе с его отношениями
+    # При удалении меню удаляются вместе с его отношениями
     menu_for_delete = db.query(models.Menu).get(menu_id)
 
     if menu_for_delete is None:
@@ -74,16 +75,19 @@ def delete_menu(menu_id: int):
 
     return menu_for_delete
 
+
 ###submenu###
 
 @app.get('/api/v1/menus/{menu_id_for_submenu}/submenus', response_model=List[BaseSubmenu])
 def get_submenu_of_menu_by_id(menu_id_for_submenu: int):
-    all_s_menu = db.query(models.Submenu).filter(models.Submenu.menu_id==menu_id_for_submenu).all()
+    all_s_menu = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).all()
     return all_s_menu
+
 
 @app.get('/api/v1/menus/{menu_id_for_submenu}/submenus/{submenu_id}', response_model=BaseSubmenu)
 def get_one_submenu_of_menu_by_id(menu_id_for_submenu: int, submenu_id: int):
-    one_submenu = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).filter(models.Submenu.id == submenu_id).first()
+    one_submenu = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).filter(
+        models.Submenu.id == submenu_id).first()
     return one_submenu
 
 
@@ -108,8 +112,8 @@ def create_submenu(menu_id_for_submenu: int, sub: BaseSubmenu):
 
 @app.patch('/api/v1/menus/{menu_id_for_submenu}/submenus/{submenu_id}', response_model=BaseSubmenu)
 def update_submenu(menu_id_for_submenu: int, submenu_id: int, submen: BaseSubmenu):
-
-    submenu_to_update = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).filter(models.Submenu.id == submenu_id).first()
+    submenu_to_update = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).filter(
+        models.Submenu.id == submenu_id).first()
     submenu_to_update.id = submen.id
     submenu_to_update.title = submen.title
     submenu_to_update.description = submen.description
@@ -121,7 +125,8 @@ def update_submenu(menu_id_for_submenu: int, submenu_id: int, submen: BaseSubmen
 
 @app.delete('/api/v1/menus/{menu_id_for_submenu}/submenus/{submenu_id}', response_model=BaseSubmenu)
 def delete_menu(menu_id_for_submenu: int, submenu_id: int):
-    smenu_for_delete = db.query(models.Submenu).filter(models.Submenu.menu_id==menu_id_for_submenu).filter(models.Submenu.id==submenu_id).first()
+    smenu_for_delete = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).filter(
+        models.Submenu.id == submenu_id).first()
 
     if smenu_for_delete is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -129,7 +134,7 @@ def delete_menu(menu_id_for_submenu: int, submenu_id: int):
         db.delete(smenu_for_delete)
         res = db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id_for_submenu).all()
         d = db.query(models.Menu).get(menu_id_for_submenu)
-        d.submenus_count =- len(res)
+        d.submenus_count = - len(res)  # правильно ли подсчитывается?
         db.add(d)
         db.commit()
 
@@ -138,22 +143,28 @@ def delete_menu(menu_id_for_submenu: int, submenu_id: int):
 
 ###dishes###
 
-@app.get('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=List[Dish], status_code=status.HTTP_200_OK)
+@app.get('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=List[Dish],
+         status_code=status.HTTP_200_OK)
 def get_all_dishes(menu_id: int, submenu_id: int):
-    dish = db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).filter(models.Submenu.menu_id == menu_id).all()
+    dish = db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).filter(
+        models.Submenu.menu_id == menu_id).all()
     return dish
 
-@app.get('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=Dish, status_code=status.HTTP_200_OK)
+
+@app.get('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=Dish,
+         status_code=status.HTTP_200_OK)
 def get_one_dishes(menu_id: int, submenu_id: int, dish_id: int):
-    dish = db.query(models.Dish).filter(models.Dish.id==dish_id).filter(models.Dish.submenu_id==submenu_id).filter(models.Submenu.menu_id==menu_id).first()
+    dish = db.query(models.Dish).filter(models.Dish.id == dish_id).filter(models.Dish.submenu_id == submenu_id).filter(
+        models.Submenu.menu_id == menu_id).first()
     if dish is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="dish not found")
     else:
         return dish
 
-@app.post('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=Dish, status_code=status.HTTP_201_CREATED)
+
+@app.post('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=Dish,
+          status_code=status.HTTP_201_CREATED)
 def create_dish(menu_id: int, submenu_id: int, dish: Dish):
-    #нужно еще добавить подсчет блюд
     new_dish = models.Dish(
         title=dish.title,
         description=dish.description,
@@ -161,20 +172,49 @@ def create_dish(menu_id: int, submenu_id: int, dish: Dish):
         submenu_id=submenu_id,
         menu_id=menu_id,
     )
-    count_dish = db.query(models.Dish).filter(models.Dish.menu_id==menu_id).filter(models.Dish.submenu_id==submenu_id).all()
-    menu_dish = db.query(models.Menu).filter(models.Menu.id==menu_id).first()
-    submenu_dish = db.query(models.Submenu).filter(models.Submenu.id==submenu_id).first()
+    count_dish = db.query(models.Dish).filter(models.Dish.menu_id == menu_id).filter(
+        models.Dish.submenu_id == submenu_id).all()
+    menu_dish = db.query(models.Menu).filter(models.Menu.id == menu_id).first()
+    submenu_dish = db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
     menu_dish.dishes_count = len(count_dish) + 1
     submenu_dish.dishes_count = len(count_dish) + 1
     db.add(new_dish)
     db.commit()
     return new_dish
 
-@app.patch('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}')
-def update_dish(menu_id: int, submenu_id: int, dish_id: int):
-    pass
+
+@app.patch('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=Dish,
+           status_code=status.HTTP_200_OK)
+def update_dish(menu_id: int, submenu_id: int, dish_id: int, dish: UpgradeDish):
+    dish_for_update = db.query(models.Dish).filter(models.Dish.id == dish_id).filter(
+        models.Dish.menu_id == menu_id).filter(models.Dish.submenu_id == submenu_id).first()
+    if dish_for_update is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='dish not found')
+    else:
+        dish_for_update.title = dish.title
+        dish_for_update.description = dish.description
+        dish_for_update.price = dish.price
+        db.commit()
+        db.refresh(dish_for_update)
+        return dish_for_update
 
 
-@app.delete('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}')
+@app.delete('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', status_code=status.HTTP_200_OK)
 def delete_dish(menu_id: int, submenu_id: int, dish_id: int):
-    pass
+    dish_for_delete = db.query(models.Dish).filter(models.Dish.id == dish_id).filter(
+        models.Dish.menu_id == menu_id).filter(models.Dish.submenu_id == submenu_id).first()
+    if dish_for_delete is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='dish not found')
+    else:
+        count_dish = db.query(models.Dish).filter(models.Dish.menu_id == menu_id).filter(
+            models.Dish.submenu_id == submenu_id).all()
+        menu_dish = db.query(models.Menu).filter(models.Menu.id == menu_id).first()
+        submenu_dish = db.query(models.Submenu).filter(models.Submenu.id == submenu_id).first()
+        menu_dish.dishes_count = len(count_dish) - 1
+        submenu_dish.dishes_count = len(count_dish) - 1
+        db.delete(dish_for_delete)
+        db.commit()
+        return {
+            "status": True,
+            "message": "The dish has been deleted"
+        }

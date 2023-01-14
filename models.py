@@ -23,7 +23,7 @@ class Submenu(BASE):
     menu_id = Column(Integer, ForeignKey('menu.id'))
     menus = relationship("Menu")
     dishes_count = Column(Integer, default=0)
-    dish = relationship("Dish")
+    dish = relationship("Dish", cascade="all, delete-orphan")
 
 
 class Dish(BASE):
