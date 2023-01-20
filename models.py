@@ -7,7 +7,7 @@ from database import BASE
 
 class Menu(BASE):
     __tablename__ = 'menu'
-    id = Column(Integer(), primary_key=True, index=True)
+    id = Column(Integer(), primary_key=True)
     title = Column(String(200), nullable=False, unique=True)
     description = Column(String())
     submenus = relationship("Submenu", cascade="all, delete-orphan")

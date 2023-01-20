@@ -37,7 +37,7 @@ class PatchSubmenu(BaseSubmenu):
     description: Optional[str]
 
 
-class Dish(BaseModel):
+class BaseDish(BaseModel):
     id: Optional[int]
     title: Optional[str]
     description: Optional[str]
@@ -47,7 +47,7 @@ class Dish(BaseModel):
         orm_mode = True
 
 
-class UpgradeDish(Dish):
+class UpgradeDish(BaseDish):
     title: str
     description: str
     price: float
