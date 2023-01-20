@@ -1,0 +1,19 @@
+version: '3.8'
+
+secrets:
+  test_web_2_app:
+    container_name: test_2_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    enviroment:
+      CONFIG_FILE: 'config.test.yaml'
+    command: "pytest -vv tester_menu.py"
+    networks:
+      - test_network
+
+
+networks:
+  test_network:
+    external:
+      name: web_2_network

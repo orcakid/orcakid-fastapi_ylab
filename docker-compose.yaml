@@ -1,0 +1,9 @@
+version: '3.8'
+
+secrets:
+  container_name: web_2_app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  enviroment:
+    CONFIG_FILE: 'config.yaml'
