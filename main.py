@@ -23,13 +23,15 @@ def read_root():
 @app.get('/api/v1/menus', response_model=List[BaseMenu], status_code=status.HTTP_200_OK)
 def get_menus():
     menus = db.session.query(Menu).all()
-    return menus
+    if menus:
+        return menus
+    else:
+        return []
 
 
 @app.get('/api/v1/menus/{menu_id}', response_model=BaseMenu, status_code=status.HTTP_200_OK)
 def get_menu(menu_id: int):
     menu = db.session.query(Menu).filter(Menu.id == menu_id).one_or_none()
-    
     if menu is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="menu not found")
     return menu
