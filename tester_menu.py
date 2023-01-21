@@ -1,10 +1,9 @@
+
 from main import app
 from fastapi.testclient import TestClient
-import pytest
-from database import BASE, engine, DATABASE_URL
-from models import Menu, Submenu, Dish
+from dotenv import load_dotenv
 
-
+load_dotenv(".env")
 
 client = TestClient(app=app)
 
