@@ -11,12 +11,8 @@ app = FastAPI()
 load_dotenv(".env")
 app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
+
 #db = Session_local()
-
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
 
 
 

@@ -6,13 +6,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "pytest -vv tester_menu.py"
+    command: "pytest -vv tests/tester_menu.py"
     volumes:
       - .:/app
     networks:
       - web_2_network
     environment:
-      - DADABSE_URL=${DADABSE_URL}
+      - DATABASE_URL=${DATABASE_URL}
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
     ports:
       - "8080:8080"
