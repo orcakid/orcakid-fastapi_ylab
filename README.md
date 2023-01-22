@@ -1,17 +1,17 @@
 # Homework for ***Ylab***
 _______
 + Склонируйте репозиторий: git clone https://github.com/orcakid/orcakid-fastapi_ylab.git .
-+ Создайте виртуальную среду:
-+ Активируйте ее
-+ Затем установите зависимости:
-+ Создайте в корневой директории файл ".env" для ваших переменных окружения
++ Создайте виртуальную среду: python -m venv venv
++ Активируйте ее: venv/Scripts/activate
++ Затем установите зависимости: pip install -r requirements.txt
++ Создайте в корневой директории файл ".env" для ваших переменных окружения: New-Item -Path . -Name ".env" -ItemType "file"
 + Заполните этот файл скопировав следущее:
    + DATABASE_URL=postgresql://postgres:orca123@db:5432/y_lab_fastapi
    + DB_USER=postgres
    + DB_PASSWORD=orca123
    + DB_NAME=y_lab_fastapi
-+ Теперь запустите первые два контейнера с приложением и базой данных:
-+ И наконец запуск отдельного контейнера с тестами
++ Теперь запустите первые два контейнера с приложением и базой данных: docker-compose up -d
++ И наконец запуск отдельного контейнера с тестами: docker-compose -f"docker-compose.test.yaml" up
 _______
 + Clone me: git clone https://github.com/orcakid/orcakid-fastapi_ylab.git .
 + Create your env: python -m venv venv
