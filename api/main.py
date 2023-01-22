@@ -1,10 +1,10 @@
 from typing import List
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from fastapi import FastAPI, status, HTTPException
-from models import Menu, Submenu, Dish
+from db_api.models import Menu, Submenu, Dish
 #from database import Session_local
 import os
-from schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu
+from db_api.schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu
 from dotenv import load_dotenv
 
 app = FastAPI()

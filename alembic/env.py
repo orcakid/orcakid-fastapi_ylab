@@ -1,5 +1,5 @@
 from logging.config import fileConfig
-import models
+import db_api.models as models
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 

@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from sqlalchemy.orm import relationship
 
 
-from database import BASE
+from db_api.database import BASE
 
 
 class Menu(BASE):
