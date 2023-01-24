@@ -10,8 +10,10 @@ _______
    + DB_USER=postgres
    + DB_PASSWORD=orca123
    + DB_NAME=y_lab_fastapi
-+ Теперь запустите первые два контейнера с приложением и базой данных: docker-compose up -d
-+ И наконец запуск отдельного контейнера с тестами: docker-compose -f"docker-compose.test.yaml" up
+______
++ Чтобы запустить контейнеры с приложением и бд используйте: docker-compose up -d
+______
++ Для контейнера с тестами используйте: docker-compose -f"docker-compose.test.yaml" up
 _______
 + Clone me: git clone https://github.com/orcakid/orcakid-fastapi_ylab.git .
 + Create your env: python -m venv venv
@@ -23,5 +25,8 @@ _______
    + DB_USER=postgres
    + DB_PASSWORD=orca123
    + DB_NAME=y_lab_fastapi
-+ Run docker compose: docker-compose up -d
-+ And run container with tests: docker-compose -f"docker-compose.test.yaml" up
+_______
++ For container with app and db: docker-compose up -d
+_______
++ For container with tests: docker-compose -f"docker-compose.test.yaml" up
+
