@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 
 from db_api.database import BASE
 
-
 class Menu(BASE):
     __tablename__ = 'menu'
     id = Column(Integer(), primary_key=True)
@@ -35,3 +34,6 @@ class Dish(BASE):
     submenu_id = Column(Integer, ForeignKey('submenu.id'))
     menu_id = Column(Integer, ForeignKey('menu.id'))
     submenus1 = relationship('Submenu', back_populates='dishes')
+
+
+

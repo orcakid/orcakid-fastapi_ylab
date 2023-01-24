@@ -6,17 +6,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "pytest -vv tests/tester_menu.py"
+    command: "pytest -vv tests/tester_menu.py" # && pytest -vv tests/tester_menu.py"
     volumes:
       - .:/app
     networks:
-      - web_2_network
+      - web_test
     environment:
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=sqlite:///./test.db
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
     ports:
       - "8080:8080"
 
 networks:
-  web_2_network:
-    external: true
+  web_test:
+    name: web_test
