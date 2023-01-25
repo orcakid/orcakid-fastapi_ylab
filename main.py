@@ -1,15 +1,14 @@
 from typing import List
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 from fastapi import FastAPI, status, HTTPException
-from models_and_schemas.models import Menu, Submenu, Dish
-from db_api.database import Session_local
-import os
-from db_api.schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu
+from models import Menu, Submenu, Dish
+from database import Session_local
+from schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu
 from dotenv import load_dotenv
 
 app = FastAPI()
-load_dotenv(".env")
-app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
+load_dotenv()
+#app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
 
 db_local = Session_local()
