@@ -29,4 +29,3 @@ _______
 + For container with app and db: docker-compose up -d
 _______
 + For container with tests: docker-compose -f"docker-compose.test.yaml" up
-

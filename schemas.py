@@ -38,7 +38,7 @@ class BaseSubmenu(BaseModel):
 class CreateSubmenu(BaseSubmenu):
     title: Optional[str]
     description: Optional[str]
-    
+
 
 class PatchSubmenu(BaseSubmenu):
     title: Optional[str]

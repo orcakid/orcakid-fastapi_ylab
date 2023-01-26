@@ -1,4 +1,3 @@
-
 from fastapi import FastAPI
 from models import Menu, Submenu, Dish
 from database import db_init
@@ -14,7 +13,6 @@ def on_startup():
 
 
 app.include_router(router=router)
-
 
 
 # from typing import List
@@ -96,7 +94,7 @@ app.include_router(router=router)
 
 # @app.get('/api/v1/menus/{menu_id_for_submenu}/submenus', response_model=List[BaseSubmenu],
 #         status_code=status.HTTP_200_OK)
-# def get_submenu_of_menu_by_id(menu_id_for_submenu: int):    
+# def get_submenu_of_menu_by_id(menu_id_for_submenu: int):
 #     all_s_menu = db_local.query(Submenu).filter(Submenu.menu_id == menu_id_for_submenu).all()
 #     return all_s_menu
 
@@ -107,7 +105,7 @@ app.include_router(router=router)
 #     one_submenu = db_local.query(Submenu).filter(
 #         Submenu.menu_id == menu_id_for_submenu).filter(
 #         Submenu.id == submenu_id).one_or_none()
- 
+
 #     if one_submenu is None:
 #         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="submenu not found")
 #     else:
