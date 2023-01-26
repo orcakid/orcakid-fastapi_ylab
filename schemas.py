@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class BaseMenu(BaseModel):
-    id: Optional[int]
+    id: Optional[str]
     title: Optional[str]
     description: Optional[str]
     dishes_count: Optional[int]
@@ -15,15 +15,18 @@ class BaseMenu(BaseModel):
         orm_mode = True
 
 
-class PatchMenu(BaseMenu):
-    id: Optional[int]
+class CreateMenu(BaseMenu):
     title: str
     description: str
-    dishes_count: Optional[int]
+
+
+class PatchMenu(BaseMenu):
+    title: str
+    description: str
 
 
 class BaseSubmenu(BaseModel):
-    id: Optional[int]
+    id: Optional[str]
     title: Optional[str]
     description: Optional[str]
     dishes_count: Optional[int]
@@ -31,6 +34,11 @@ class BaseSubmenu(BaseModel):
     class Config:
         orm_mode = True
 
+
+class CreateSubmenu(BaseSubmenu):
+    title: Optional[str]
+    description: Optional[str]
+    
 
 class PatchSubmenu(BaseSubmenu):
     title: Optional[str]
@@ -41,13 +49,13 @@ class BaseDish(BaseModel):
     id: Optional[str]
     title: Optional[str]
     description: Optional[str]
-    price: str
+    price: Optional[str]
 
     class Config:
         orm_mode = True
 
 
-class ResponseDish(BaseDish):
+class CreateDish(BaseDish):
     title: str
     description: str
-    price: float
+    price: str | None

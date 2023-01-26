@@ -1,0 +1,22 @@
+repos:
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v2.4.0
+    hooks:
+      # проверяет наличие переноса строки в конце всех текстовых файлов
+      - id: end-of-file-fixer
+      # предупреждает о добавлении больших файлов в Git
+      - id: check-added-large-files
+      # предупреждает о сохранении файлов с UTF-8 BOM
+      - id: check-byte-order-marker
+      # предотвращает сохранение приватных ключей
+      - id: detect-private-key
+      # проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python
+      - id: check-ast
+  - repo: 'https://gitlab.com/pycqa/flake8'
+    rev: 3.8.2
+    hooks:
+      - id: flake8
+  - repo: 'https://github.com/psf/black'
+    rev: 19.10b0
+    hooks:
+      - id: black

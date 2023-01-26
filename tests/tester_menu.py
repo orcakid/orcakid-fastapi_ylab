@@ -26,26 +26,14 @@ def test_create_menu(client, test_db):
 
 def test_one_menu1(client, test_db):
     response = client.get('/api/v1/menus/0')
-    assert response.json() == {
-        "id": 0,
-        "title": "My menu 1",
-        "description": "My menu description 1",
-        "submenus_count": 0,
-        "dishes_count": 0
-        }
-    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {'detail': 'menu not found'}
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_patch_menu(client, test_db):
     response = client.patch('/api/v1/menus/0', json={'title': 'My updated menu 2', 'description': 'My updated menu description 2'})
-    assert response.json() == {
-        "id": 0,
-        "title": "My updated menu 2",
-        "description": "My updated menu description 2",
-        "submenus_count": 0,
-        "dishes_count": 0
-        }
-    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {'detail': 'menu not found'}
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_delete_menu(client, test_db):
@@ -57,10 +45,16 @@ def test_delete_menu(client, test_db):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_patch_menu_when_delete(client, test_db):
+def test_patch_menu1(client, test_db):
     response = client.patch('/api/v1/menus/1', json={'title': 'My updated menu 1', 'description': 'My updated menu description 1'})
-    assert response.json() == {'detail': 'menu not found'}
-    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {
+        "id": "1",
+        "title": "My updated menu 1",
+        "description": "My updated menu description 1",
+        "submenus_count": 0,
+        "dishes_count": 0
+        }
+    assert response.status_code == status.HTTP_200_OK
 
 
 def test_delete_menu(client, test_db):
@@ -72,7 +66,7 @@ def test_delete_menu(client, test_db):
 def test_create_menu(client, test_db):
     response = client.post('/api/v1/menus', json={'title': 'My menu 1', 'description': 'My menu description 1'})
     assert response.json() == {
-        "id": 0,
+        "id": "1",
         "title": "My menu 1",
         "description": "My menu description 1",
         "submenus_count": 0,
