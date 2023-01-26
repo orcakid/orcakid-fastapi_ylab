@@ -1,19 +1,21 @@
 from typing import List
-from fastapi_sqlalchemy import DBSessionMiddleware, db
 from fastapi import FastAPI, status, HTTPException
 from models import Menu, Submenu, Dish
-from database import Session_local
-from schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu
+from database import Session_local, db_init
+from schemas import BaseMenu, BaseSubmenu, PatchMenu, BaseDish, PatchSubmenu, ResponseDish
 from dotenv import load_dotenv
+
 
 app = FastAPI()
 load_dotenv()
-#app.add_middleware(DBSessionMiddleware, db_url=os.environ["DATABASE_URL"])
 
 
 db_local = Session_local()
 
 
+@app.on_event("startup")
+def on_startup():
+    db_init()
 
 @app.get('/api/v1/menus', response_model=List[BaseMenu], status_code=status.HTTP_200_OK)
 def get_menus():
@@ -102,8 +104,10 @@ def create_submenu(menu_id_for_submenu: int, sub: BaseSubmenu):
         description=sub.description,
         menu_id=menu_id_for_submenu
     )
-    db_local.add(new_submenu)
-    db_local.commit()
+    menu = db_local.query(Menu).filter(Menu.id==menu_id_for_submenu).first()
+    if menu:
+        db_local.add(new_submenu)
+        db_local.commit()
     res = db_local.query(Submenu).filter(Submenu.menu_id == menu_id_for_submenu).all()
     if res is not None:
         d = db_local.query(Menu).filter(Menu.id == menu_id_for_submenu).first()
@@ -170,18 +174,16 @@ def get_one_dishes(menu_id: int, submenu_id: int, dish_id: int):
         return dish
 
 
-@app.post('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=BaseDish,
+@app.post('/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=ResponseDish,
         status_code=status.HTTP_201_CREATED)
 def create_dish(menu_id: int, submenu_id: int, dish: BaseDish):
     new_dish = Dish(
-        id=str(dish.id or 0),
         title=dish.title,
         description=dish.description,
         price=dish.price,
         submenu_id=submenu_id,
         menu_id=menu_id,
         )
-    
     #блюдо
     db_dish = db_local.query(Dish).filter(Dish.title == new_dish.title).first()
     menu = db_local.query(Menu).filter(Menu.id == menu_id).first()

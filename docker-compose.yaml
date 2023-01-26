@@ -9,43 +9,27 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5432:5432"
-    networks:
-      - web_2_network
+      - "${DB_PORT}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d y_lab_fastapi"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 10s
-    #restart: unless-stopped
-    # deploy:
-    #   resources:
-    #     limits:
-    #       cpus: '1'
-    #       memory: 4G
-
-
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    command: sh -c "alembic upgrade head && uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload && python create_db.py"
-    # command: sh -c "alembic revision --autogenerate -m "first migation" && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     volumes:
       - .:/app
-    networks:
-    - web_2_network
     ports:
-      - "8000:8000"
-    depends_on:
-    - db
-    restart: always
+      - 8000:8000
     environment:
-      - DATABASE_URL=${DATABASE_URL}
-
-networks:
-  web_2_network:
-    name: web_2_network
-    driver: bridge
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT}
+    depends_on:
+      db:
+        condition: service_healthy

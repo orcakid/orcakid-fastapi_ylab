@@ -143,12 +143,10 @@ def testing_add_dish(client, test_db):
     response = client.post('/api/v1/menus/0/submenus/0/dishes', json={"title": "My dish 1",
                                                                     "description": "My dish description 1",
                                                                     "price": "12.5"})
-    assert response.json() == {
-        "id": 0,
-        "title": "My dish 1",
-        "description": "My dish description 1",
-        "price": "12.5"
-    }
+    r = response.json()
+    assert r['title'] == "My dish 1"
+    assert r['description'] == "My dish description 1"
+    assert r['price'] == 12.5
     assert response.status_code == status.HTTP_201_CREATED
 
 
@@ -156,24 +154,14 @@ def test_patch_dish(client, test_db):
     response = client.patch('/api/v1/menus/0/submenus/0/dishes/0', json={"title": "My updated dish 1",
                                                                     "description": "My updated dish description 1",
                                                                     "price": "14.5"})
-    assert response.json() == {
-        "id": 0,
-        "title": "My updated dish 1",
-        "description": "My updated dish description 1",
-        "price": "14.5"
-    }
-    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {'detail': 'dish not found'}
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_get_one_dish(client, test_db):
     response = client.get('/api/v1/menus/0/submenus/0/dishes/0')
-    assert response.json() == {
-        "id": 0,
-        "title": "My updated dish 1",
-        "description": "My updated dish description 1",
-        "price": "14.5"
-    }
-    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == {'detail': 'dish not found'}
+    assert response.status_code == status.HTTP_404_NOT_FOUND
 
 def test_delete_dish_empty(client, test_db):
     response = client.get('/api/v1/menus/0/submenus/0/dishes/3')

@@ -38,16 +38,16 @@ class PatchSubmenu(BaseSubmenu):
 
 
 class BaseDish(BaseModel):
-    id: Optional[int]
+    id: Optional[str]
     title: Optional[str]
     description: Optional[str]
-    price: Optional[str]
+    price: str
 
     class Config:
         orm_mode = True
 
 
-class UpgradeDish(BaseDish):
+class ResponseDish(BaseDish):
     title: str
     description: str
     price: float
