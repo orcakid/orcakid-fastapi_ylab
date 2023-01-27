@@ -1,18 +1,15 @@
-from models import Menu, Submenu, Dish
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
+
+from models import Dish, Menu, Submenu
 from schemas import (
-    BaseMenu,
-    BaseSubmenu,
-    PatchMenu,
     BaseDish,
-    PatchSubmenu,
     CreateDish,
     CreateMenu,
     CreateSubmenu,
+    PatchMenu,
+    PatchSubmenu,
 )
-from fastapi import status, HTTPException
-import redis
-import json
 
 
 def get_all_menus(db: Session):
@@ -24,7 +21,7 @@ def get_menu(db: Session, menu_id: int):
     menu = db.query(Menu).filter(Menu.id == menu_id).first()
     if menu is None:
         raise HTTPException(
-            tatus_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
         )
     return menu
 

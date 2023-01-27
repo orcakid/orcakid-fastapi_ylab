@@ -1,11 +1,11 @@
 import pytest
-from main import app
-from fastapi.testclient import TestClient
 from dotenv import load_dotenv
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database import BASE, get_db, db_init
 
+from database import BASE, db_init, get_db
+from main import app
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(

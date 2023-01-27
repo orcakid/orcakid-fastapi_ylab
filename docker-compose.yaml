@@ -10,11 +10,14 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "${DB_PORT}:5432"
+    networks:
+      - web_api
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d y_lab_fastapi"]
       interval: 10s
       timeout: 5s
       retries: 5
+
 
   app:
     build:
@@ -25,19 +28,35 @@ services:
       - .:/app
     ports:
       - 8000:8000
+    networks:
+      - web_api
     environment:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
       - DB_PORT=${DB_PORT}
+
     depends_on:
-      db:
-        condition: service_healthy
+      - db
+      - redis
+      # db:
+      #   condition: service_healthy
 
   redis:
     image: redis
     container_name: 'redis-server'
     restart: unless-stopped
     ports:
-        - "6379:6379"
+      - "6379:6379"
+    networks:
+      - web_api
     command: [ "redis-server"]
+
+
+
+
+
+networks:
+  web_api:
+    name: web_api
+    driver: bridge

@@ -1,11 +1,38 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
     hooks:
     -   id: check-yaml
-    # -   id: end-of-file-fixer
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
+    -   id: debug-statements
+    -   id: end-of-file-fixer
+    #-   id: trailing-whitespace
+        exclude: ^tests/fixtures/
+
+  - repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:
     -   id: black
+
+#   - repo: https://github.com/pre-commit/mirrors-autopep8
+#     rev: v2.0.1
+#     hooks:
+#     -   id: autopep8
+
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v2.4.0
+    hooks:
+      # проверяет наличие переноса строки в конце всех текстовых файлов
+      - id: end-of-file-fixer
+      # предупреждает о добавлении больших файлов в Git
+      - id: check-added-large-files
+      # предупреждает о сохранении файлов с UTF-8 BOM
+      - id: check-byte-order-marker
+      # предотвращает сохранение приватных ключей
+      - id: detect-private-key
+      # проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python
+      - id: check-ast
+
+#   - repo: https://github.com/pycqa/isort
+#     rev: 5.5.2
+#     hooks:
+#       - id: isort

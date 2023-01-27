@@ -1,9 +1,9 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
-from typing import Generator
-from dotenv import load_dotenv
 import os
+from typing import Generator
+
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ DATABASE_URL = f'postgresql://{os.environ.get("DB_USER")}:{os.environ.get("DB_PA
 DATABASE_URL_TESTING = f'postgresql://{os.environ.get("DB_USER_TESTING")}:{os.environ.get("DB_PASSWORD_TESTING")}@db_test:{os.environ.get("DB_PORT_TESTING")}/{os.environ.get("DB_NAME_TESTING")}'
 
 
-engine = create_engine(DATABASE_URL, echo=True)
+engine = create_engine(DATABASE_URL_LOCAL, echo=True)
 
 BASE = declarative_base()
 
