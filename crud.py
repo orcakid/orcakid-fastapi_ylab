@@ -11,17 +11,20 @@ from schemas import (
     CreateSubmenu,
 )
 from fastapi import status, HTTPException
+import redis
+import json
 
 
 def get_all_menus(db: Session):
-    return db.query(Menu).all()
+    menu = db.query(Menu).all()
+    return menu
 
 
 def get_menu(db: Session, menu_id: int):
     menu = db.query(Menu).filter(Menu.id == menu_id).first()
     if menu is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
+            tatus_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
         )
     return menu
 

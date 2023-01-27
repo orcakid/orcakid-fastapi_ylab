@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from models import Menu, Submenu, Dish
 from database import db_init
 from router import router
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from fastapi_cache.decorator import cache
+
+from redis import asyncio as aioredis
 
 
 app = FastAPI()
@@ -9,6 +14,10 @@ app = FastAPI()
 
 @app.on_event("startup")
 def on_startup():
+    redis = aioredis.from_url(
+        "redis://localhost", encoding="utf8", decode_responses=True
+    )
+    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     db_init()
 
 

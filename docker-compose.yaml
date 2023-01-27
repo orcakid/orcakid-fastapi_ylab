@@ -33,3 +33,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  redis:
+    image: redis
+    container_name: 'redis-server'
+    restart: unless-stopped
+    ports:
+        - "6379:6379"
+    command: [ "redis-server"]
