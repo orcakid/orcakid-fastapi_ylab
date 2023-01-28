@@ -3,12 +3,8 @@ from sqlalchemy.orm import Session
 
 from models import Dish, Menu, Submenu
 from schemas import (
-    BaseDish,
-    CreateDish,
-    CreateMenu,
-    CreateSubmenu,
-    PatchMenu,
-    PatchSubmenu,
+    BaseDish, CreateDish, CreateMenu, CreateSubmenu,
+    PatchMenu, PatchSubmenu,
 )
 
 
@@ -21,7 +17,8 @@ def get_menu(db: Session, menu_id: int):
     menu = db.query(Menu).filter(Menu.id == menu_id).first()
     if menu is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='menu not found',
         )
     return menu
 
@@ -30,7 +27,9 @@ def create_menu(db: Session, menu: CreateMenu):
     # количесвто подменю
     res = db.query(Submenu).filter(Submenu.menu_id == menu.id).all()
     new_menu = Menu(
-        title=menu.title, description=menu.description, submenus_count=len(res)
+        title=menu.title,
+        description=menu.description,
+        submenus_count=len(res),
     )
     menu_db = db.query(Menu).filter(Menu.id == menu.id).first()
     if menu_db is None:
@@ -39,7 +38,8 @@ def create_menu(db: Session, menu: CreateMenu):
         return new_menu
     else:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="menu already exist"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='menu already exist',
         )
 
 
@@ -47,7 +47,8 @@ def update_menu(db: Session, menu_id: int, menu: PatchMenu):
     menu_to_update = db.query(Menu).filter(Menu.id == menu_id).one_or_none()
     if menu_to_update is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='menu not found',
         )
     menu_to_update.id = menu_id
     menu_to_update.title = menu.title
@@ -64,7 +65,7 @@ def delete_menu(db: Session, menu_id: int):
     else:
         db.delete(menu_for_delete)
         db.commit()
-        return {"status": True, "message": "The menu has been deleted"}
+        return {'status': True, 'message': 'The menu has been deleted'}
 
 
 def get_submenu_list(db: Session, menu_id: int):
@@ -81,14 +82,19 @@ def get_one_submenu_of_menu_by_id(db: Session, menu_id: int, submenu_id: int):
     )
     if one_submenu is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="submenu not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='submenu not found',
         )
     else:
         return one_submenu
 
 
 def create_submenu(db: Session, menu_id: int, sub: CreateSubmenu):
-    new_submenu = Submenu(title=sub.title, description=sub.description, menu_id=menu_id)
+    new_submenu = Submenu(
+        title=sub.title,
+        description=sub.description,
+        menu_id=menu_id,
+    )
     menu = db.query(Menu).filter(Menu.id == menu_id).first()
     if menu:
         submenu = db.query(Submenu).filter(Submenu.id == sub.id).first()
@@ -97,7 +103,8 @@ def create_submenu(db: Session, menu_id: int, sub: CreateSubmenu):
             db.commit()
         else:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="menu already exist"
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail='menu already exist',
             )
     # учет количества сабменю в данном меню
     res = db.query(Submenu).filter(Submenu.menu_id == menu_id).all()
@@ -118,7 +125,8 @@ def update_submenu(db: Session, menu_id: int, submenu_id: int, submenu: PatchSub
     )
     if submenu_to_update is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="submenu not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='submenu not found',
         )
     else:
         submenu_to_update.title = submenu.title
@@ -129,7 +137,13 @@ def update_submenu(db: Session, menu_id: int, submenu_id: int, submenu: PatchSub
 
 
 def delete_submenu(db: Session, menu_id: int, submenu_id: int):
-    s_menu_for_delete = db.query(Submenu).filter(Submenu.id == submenu_id).first()
+    s_menu_for_delete = (
+        db.query(Submenu)
+        .filter(
+            Submenu.id == submenu_id,
+        )
+        .first()
+    )
     if s_menu_for_delete is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     else:
@@ -139,11 +153,17 @@ def delete_submenu(db: Session, menu_id: int, submenu_id: int):
         db.delete(s_menu_for_delete)
         db.commit()
         db.refresh(menu)
-        count_dish_for_this_menu = db.query(Dish).filter(Dish.menu_id == menu_id).all()
+        count_dish_for_this_menu = (
+            db.query(
+                Dish,
+            )
+            .filter(Dish.menu_id == menu_id)
+            .all()
+        )
         menu.dishes_count = len(count_dish_for_this_menu)
         db.commit()
         db.refresh(menu)
-        return {"status": True, "message": "The submenu has been deleted"}
+        return {'status': True, 'message': 'The submenu has been deleted'}
 
 
 def get_all_dishes(db: Session, menu_id: int, submenu_id: int):
@@ -161,13 +181,16 @@ def get_one_dishes(db: Session, menu_id: int, submenu_id: int, dish_id: int):
         db.query(Dish)
         .join(Submenu, Submenu.id == Dish.submenu_id)
         .filter(
-            Dish.id == dish_id, Submenu.id == submenu_id, Submenu.menu_id == menu_id
+            Dish.id == dish_id,
+            Submenu.id == submenu_id,
+            Submenu.menu_id == menu_id,
         )
         .first()
     )
     if dish is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="dish not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='dish not found',
         )
     else:
         return dish
@@ -187,19 +210,33 @@ def create_dish(db: Session, menu_id: int, submenu_id: int, dish: CreateDish):
     submenu = db.query(Submenu).filter(Submenu.id == submenu_id).first()
     if db_dish is not None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="dish already exist"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='dish already exist',
         )
     elif menu is None or submenu is None:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="menu or submenu not exist"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail='menu or submenu not exist',
         )
     else:
         db.add(new_dish)
         db.commit()
-        count_dish_submenu = db.query(Dish).filter(Dish.submenu_id == submenu_id).all()
+        count_dish_submenu = (
+            db.query(Dish)
+            .filter(
+                Dish.submenu_id == submenu_id,
+            )
+            .all()
+        )
         count_dish_menu = db.query(Dish).filter(Dish.menu_id == menu_id).all()
         menu_dish = db.query(Menu).filter(Menu.id == menu_id).first()
-        submenu_dish = db.query(Submenu).filter(Submenu.id == submenu_id).first()
+        submenu_dish = (
+            db.query(Submenu)
+            .filter(
+                Submenu.id == submenu_id,
+            )
+            .first()
+        )
         menu_dish.dishes_count = len(count_dish_menu)
         submenu_dish.dishes_count = len(count_dish_submenu)
         db.add(menu_dish)
@@ -211,7 +248,11 @@ def create_dish(db: Session, menu_id: int, submenu_id: int, dish: CreateDish):
 
 
 def update_dish(
-    db: Session, menu_id: int, submenu_id: int, dish_id: int, dish: BaseDish
+    db: Session,
+    menu_id: int,
+    submenu_id: int,
+    dish_id: int,
+    dish: BaseDish,
 ):
     dish_for_update = (
         db.query(Dish)
@@ -222,7 +263,8 @@ def update_dish(
     )
     if dish_for_update is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="dish not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='dish not found',
         )
     else:
         dish_for_update.title = dish.title
@@ -243,7 +285,8 @@ def delete_dish(db: Session, menu_id: int, submenu_id: int, dish_id: int):
     )
     if dish_for_delete is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="dish not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='dish not found',
         )
     else:
         count_dish = (
@@ -253,9 +296,15 @@ def delete_dish(db: Session, menu_id: int, submenu_id: int, dish_id: int):
             .all()
         )
         menu_dish = db.query(Menu).filter(Menu.id == menu_id).first()
-        submenu_dish = db.query(Submenu).filter(Submenu.id == submenu_id).first()
+        submenu_dish = (
+            db.query(Submenu)
+            .filter(
+                Submenu.id == submenu_id,
+            )
+            .first()
+        )
         menu_dish.dishes_count = len(count_dish) - 1
         submenu_dish.dishes_count = len(count_dish) - 1
         db.delete(dish_for_delete)
         db.commit()
-        return {"status": True, "message": "The dish has been deleted"}
+        return {'status': True, 'message': 'The dish has been deleted'}

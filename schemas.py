@@ -4,11 +4,11 @@ from pydantic import BaseModel
 
 
 class BaseMenu(BaseModel):
-    id: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    dishes_count: Optional[int]
-    submenus_count: Optional[int]
+    id: str | None
+    title: str | None
+    description: str | None
+    dishes_count: int | None
+    submenus_count: int | None
 
     # автоматически сирелизует обьекты склалхими в джейсон
     class Config:
@@ -26,30 +26,30 @@ class PatchMenu(BaseMenu):
 
 
 class BaseSubmenu(BaseModel):
-    id: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    dishes_count: Optional[int]
+    id: str | None
+    title: str | None
+    description: str | None
+    dishes_count: int | None
 
     class Config:
         orm_mode = True
 
 
 class CreateSubmenu(BaseSubmenu):
-    title: Optional[str]
-    description: Optional[str]
+    title: str | None
+    description: str | None
 
 
 class PatchSubmenu(BaseSubmenu):
-    title: Optional[str]
-    description: Optional[str]
+    title: str | None
+    description: str | None
 
 
 class BaseDish(BaseModel):
-    id: Optional[str]
-    title: Optional[str]
-    description: Optional[str]
-    price: Optional[str]
+    id: str | None
+    title: str | None
+    description: str | None
+    price: str | None
 
     class Config:
         orm_mode = True

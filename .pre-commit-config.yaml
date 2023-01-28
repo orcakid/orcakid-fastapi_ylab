@@ -6,31 +6,56 @@ repos:
     -   id: debug-statements
     #-   id: end-of-file-fixer
     -   id: trailing-whitespace
-        exclude: ^tests/fixtures/
+    -   id: check-merge-conflict
+    -   id: double-quote-string-fixer
+    -   id: check-byte-order-marker
+      # предотвращает сохранение приватных ключей
+    -   id: detect-private-key
+      # проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python
+    -   id: check-ast
 
-  - repo: https://github.com/psf/black
-    rev: 22.10.0
+  # - repo: https://github.com/psf/black
+  #   rev: 22.10.0
+  #   hooks:
+  #   -   id: black
+
+  # - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+  #   rev: v2.4.0
+  #   hooks:
+  #     - id: check-byte-order-marker
+  #     # предотвращает сохранение приватных ключей
+  #     - id: detect-private-key
+  #     # проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python
+  #     - id: check-ast
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v2.4.0
     hooks:
-    -   id: black
-
+    -   id: add-trailing-comma
+        args: [--py36-plus]
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.3.1
+    hooks:
+    -   id: pyupgrade
+        args: [--py311-plus]
+  # - repo: https://github.com/pycqa/isort
+  #   rev: 5.5.2
+  #   hooks:
+  #     - id: isort
+  #       exclude: __init__.py
+  #       #args: [black, --filter-files]
+  - repo: https://github.com/PyCQA/flake8
+    rev: 6.0.0
+    hooks:
+    -   id: flake8
+        exclude: __init__.py
+        args: ["--ignore=E501,F821,F401,F811"]
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v0.991
+  #   hooks:
+  #   -   id: mypy
+  #       exclude: alembic/
+  #       args: ["--ignore-missing-imports", "--scripts-are-modules"]
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v2.0.1
     hooks:
     -   id: autopep8
-
-  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
-    rev: v2.4.0
-    hooks:
-    #   # предупреждает о добавлении больших файлов в Git
-    #   - id: check-added-large-files
-      # предупреждает о сохранении файлов с UTF-8 BOM
-      - id: check-byte-order-marker
-      # предотвращает сохранение приватных ключей
-      - id: detect-private-key
-      # проверяет, что файлы, которые мы собираемся сохранять, как минимум валидный Python
-      - id: check-ast
-
-#   - repo: https://github.com/pycqa/isort
-#     rev: 5.5.2
-#     hooks:
-#       - id: isort

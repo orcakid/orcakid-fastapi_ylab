@@ -10,12 +10,14 @@ from router import router
 app = FastAPI()
 
 
-@app.on_event("startup")
+@app.on_event('startup')
 def on_startup():
     redis = aioredis.from_url(
-        "redis://localhost:6379", encoding="utf8", decode_responses=True
+        'redis://localhost:6379',
+        encoding='utf8',
+        decode_responses=True,
     )
-    FastAPICache.init(RedisBackend(redis), prefix="menu-cache")
+    FastAPICache.init(RedisBackend(redis), prefix='menu-cache')
     db_init()
 
 

@@ -7,14 +7,8 @@ from sqlalchemy.orm import Session
 import crud as crud
 from database import get_db
 from schemas import (
-    BaseDish,
-    BaseMenu,
-    BaseSubmenu,
-    CreateDish,
-    CreateMenu,
-    CreateSubmenu,
-    PatchMenu,
-    PatchSubmenu,
+    BaseDish, BaseMenu, BaseSubmenu, CreateDish, CreateMenu,
+    CreateSubmenu, PatchMenu, PatchSubmenu,
 )
 
 router = APIRouter()
@@ -26,9 +20,9 @@ def get_cache():
 
 
 @router.get(
-    "/api/v1/menus",
-    response_model=List[BaseMenu],
-    description="Возвращает список всех меню",
+    '/api/v1/menus',
+    response_model=list[BaseMenu],
+    description='Возвращает список всех меню',
 )
 @cache(expire=60)
 def get_menus(db: Session = Depends(get_db)):
@@ -37,7 +31,9 @@ def get_menus(db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/api/v1/menus/{menu_id}", response_model=BaseMenu, description="Поиск меню по id"
+    '/api/v1/menus/{menu_id}',
+    response_model=BaseMenu,
+    description='Поиск меню по id',
 )
 @cache(expire=60)
 def get_one_menu(menu_id: int, db: Session = Depends(get_db)):
@@ -45,31 +41,33 @@ def get_one_menu(menu_id: int, db: Session = Depends(get_db)):
 
 
 @router.post(
-    "/api/v1/menus",
+    '/api/v1/menus',
     response_model=BaseMenu,
     status_code=status.HTTP_201_CREATED,
-    description="Создает меню",
+    description='Создает меню',
 )
 def create_menu(menu: CreateMenu, db: Session = Depends(get_db)):
     return crud.create_menu(db=db, menu=menu)
 
 
 @router.patch(
-    "/api/v1/menus/{menu_id}", response_model=BaseMenu, description="Обновляет меню"
+    '/api/v1/menus/{menu_id}',
+    response_model=BaseMenu,
+    description='Обновляет меню',
 )
 def update_menu(menu_id: int, menu: PatchMenu, db: Session = Depends(get_db)):
     return crud.update_menu(db=db, menu=menu, menu_id=menu_id)
 
 
-@router.delete("/api/v1/menus/{menu_id}", description="Удаляет меню")
+@router.delete('/api/v1/menus/{menu_id}', description='Удаляет меню')
 def delete_menu(menu_id: int, db: Session = Depends(get_db)):
     return crud.delete_menu(db=db, menu_id=menu_id)
 
 
 @router.get(
-    "/api/v1/menus/{menu_id}/submenus",
-    response_model=List[BaseSubmenu],
-    description="Возвращает список всех подменю определенного меню",
+    '/api/v1/menus/{menu_id}/submenus',
+    response_model=list[BaseSubmenu],
+    description='Возвращает список всех подменю определенного меню',
 )
 @cache(expire=60)
 def get_list_submenu(menu_id: int, db: Session = Depends(get_db)):
@@ -77,51 +75,60 @@ def get_list_submenu(menu_id: int, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}',
     response_model=BaseSubmenu,
-    description="Подменю по id меню и подменню",
+    description='Подменю по id меню и подменню',
 )
 @cache(expire=60)
 def get_one_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
     return crud.get_one_submenu_of_menu_by_id(
-        db=db, menu_id=menu_id, submenu_id=submenu_id
+        db=db,
+        menu_id=menu_id,
+        submenu_id=submenu_id,
     )
 
 
 @router.post(
-    "/api/v1/menus/{menu_id}/submenus",
+    '/api/v1/menus/{menu_id}/submenus',
     response_model=BaseSubmenu,
     status_code=status.HTTP_201_CREATED,
-    description="Создает подменю",
+    description='Создает подменю',
 )
 def create_submenu(menu_id: int, sub: CreateSubmenu, db: Session = Depends(get_db)):
     return crud.create_submenu(db=db, menu_id=menu_id, sub=sub)
 
 
 @router.patch(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}',
     response_model=BaseSubmenu,
-    description="Обновляет подменю",
+    description='Обновляет подменю',
 )
 def update_submenu(
-    menu_id: int, submenu_id: int, sub: PatchSubmenu, db: Session = Depends(get_db)
+    menu_id: int,
+    submenu_id: int,
+    sub: PatchSubmenu,
+    db: Session = Depends(get_db),
 ):
     return crud.update_submenu(
-        db=db, submenu_id=submenu_id, menu_id=menu_id, submenu=sub
+        db=db,
+        submenu_id=submenu_id,
+        menu_id=menu_id,
+        submenu=sub,
     )
 
 
 @router.delete(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}", description="Удаляет подменю"
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}',
+    description='Удаляет подменю',
 )
 def delete_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
     return crud.delete_submenu(db=db, menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.get(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes",
-    response_model=List[BaseDish],
-    description="Возвращает список всех блюд по id меню и подменю",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes',
+    response_model=list[BaseDish],
+    description='Возвращает список всех блюд по id меню и подменю',
 )
 @cache(expire=60)
 def get_dishes_list(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
@@ -129,35 +136,44 @@ def get_dishes_list(menu_id: int, submenu_id: int, db: Session = Depends(get_db)
 
 
 @router.get(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}',
     response_model=BaseDish,
-    description="Возвращает блюдо по id",
+    description='Возвращает блюдо по id',
 )
 @cache(expire=60)
 def get_one_dishes(
-    menu_id: int, submenu_id: int, dish_id: int, db: Session = Depends(get_db)
+    menu_id: int,
+    submenu_id: int,
+    dish_id: int,
+    db: Session = Depends(get_db),
 ):
     return crud.get_one_dishes(
-        db=db, dish_id=dish_id, menu_id=menu_id, submenu_id=submenu_id
+        db=db,
+        dish_id=dish_id,
+        menu_id=menu_id,
+        submenu_id=submenu_id,
     )
 
 
 @router.post(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes',
     response_model=BaseDish,
     status_code=status.HTTP_201_CREATED,
-    description="Создание блюда",
+    description='Создание блюда',
 )
 def create_dish(
-    menu_id: int, submenu_id: int, dish: CreateDish, db: Session = Depends(get_db)
+    menu_id: int,
+    submenu_id: int,
+    dish: CreateDish,
+    db: Session = Depends(get_db),
 ):
     return crud.create_dish(db=db, menu_id=menu_id, submenu_id=submenu_id, dish=dish)
 
 
 @router.patch(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}',
     response_model=BaseDish,
-    description="Обновляет блюдо",
+    description='Обновляет блюдо',
 )
 def update_dish(
     menu_id: int,
@@ -167,17 +183,27 @@ def update_dish(
     db: Session = Depends(get_db),
 ):
     return crud.update_dish(
-        db=db, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id, dish=dish
+        db=db,
+        menu_id=menu_id,
+        submenu_id=submenu_id,
+        dish_id=dish_id,
+        dish=dish,
     )
 
 
 @router.delete(
-    "/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}",
-    description="удаляет блюдо",
+    '/api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}',
+    description='удаляет блюдо',
 )
 def delete_dish(
-    menu_id: int, submenu_id: int, dish_id: int, db: Session = Depends(get_db)
+    menu_id: int,
+    submenu_id: int,
+    dish_id: int,
+    db: Session = Depends(get_db),
 ):
     return crud.delete_dish(
-        db=db, menu_id=menu_id, submenu_id=submenu_id, dish_id=dish_id
+        db=db,
+        menu_id=menu_id,
+        submenu_id=submenu_id,
+        dish_id=dish_id,
     )
