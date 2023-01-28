@@ -1,46 +1,23 @@
 import pytest
-from dotenv import load_dotenv
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from database import BASE, db_init, get_db
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
+from database import db_init
 from main import app
-
-SQLALCHEMY_DATABASE_URL = 'sqlite:///./test.db'
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={'check_same_thread': False},
-)
-# engine = create_engine(SQLALCHEMY_DATABASE_URL)
-TestingSessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine,
-)
-load_dotenv()
+import os
 
 
-def override_get_db():
-    try:
-        db = TestingSessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-
-
-@pytest.fixture(scope='session')
-def test_db():
-    db_init()
-    BASE.metadata.create_all(bind=engine)
-    yield
-    BASE.metadata.drop_all(bind=engine)
+def ini():
+    redis = aioredis.from_url(
+        f'redis://{os.environ.get("REDIS_HOST")}:6379',
+        encoding='utf8', decode_responses=True,
+    )
+    FastAPICache.init(RedisBackend(redis), prefix='menu-cache')
 
 
 @pytest.fixture(scope='module')
 def client():
+    db_init()
     client = TestClient(app=app)
     yield client

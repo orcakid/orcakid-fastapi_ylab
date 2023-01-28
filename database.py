@@ -7,19 +7,13 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
 
-# локальная база
-DATABASE_URL_LOCAL = f'postgresql://{os.environ.get("DB_USER_LOCAL")}:{os.environ.get("DB_PASSWORD_LOCAL")}@localhost/{os.environ.get("DB_NAME_LOCAL")}'
-# бд контейнеров приложения и базы данных
-DATABASE_URL = f'postgresql://{os.environ.get("DB_USER")}:{os.environ.get("DB_PASSWORD")}@db:{os.environ.get("DB_PORT")}/{os.environ.get("DB_NAME")}'
-# бд контейнеров тест
-DATABASE_URL_TESTING = f'postgresql://{os.environ.get("DB_USER_TESTING")}:{os.environ.get("DB_PASSWORD_TESTING")}@db_test:{os.environ.get("DB_PORT_TESTING")}/{os.environ.get("DB_NAME_TESTING")}'
+
+DATABASE_URL = f'postgresql://{os.environ.get("DB_USER")}:{os.environ.get("DB_PASSWORD")}@{os.environ.get("DB_HOST")}:{os.environ.get("DB_PORT")}/{os.environ.get("DB_NAME")}'
 
 
-engine = create_engine(DATABASE_URL_LOCAL, echo=True)
-
-BASE = declarative_base()
-
+engine = create_engine(DATABASE_URL)
 Session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+BASE = declarative_base()
 
 
 def db_init():

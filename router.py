@@ -14,11 +14,6 @@ from schemas import (
 router = APIRouter()
 
 
-@cache()
-def get_cache():
-    return 1
-
-
 @router.get(
     '/api/v1/menus',
     response_model=list[BaseMenu],
