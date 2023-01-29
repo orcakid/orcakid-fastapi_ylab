@@ -15,6 +15,9 @@ _______
    + DB_PORT=5432
    + REDIS_HOST=redis
 ______
+#Проверка линтеров
++ pre-commit run --all-files
+______
 #Запуск контейнера с приложением
 + Чтобы запустить контейнеры с приложением и бд используйте: docker-compose up -d
 ______
@@ -35,6 +38,9 @@ _______
    + DB_HOST=db
    + DB_PORT=5432
    + REDIS_HOST=redis
+______
+#Сhecking linters
++ pre-commit run --all-files
 _______
 #Run container with app
 + For container with app and db: docker-compose up -d
