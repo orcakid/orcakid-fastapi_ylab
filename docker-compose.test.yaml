@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_DB=y_lab_fastapi_test
     ports:
       - "5432:5433"
     healthcheck:
@@ -28,11 +28,20 @@ services:
     environment:
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      - DB_NAME=y_lab_fastapi_test
       - DB_PORT=${DB_PORT}
+      - DB_HOST=db_test
       - SQLALCHEMY_SILENCE_UBER_WARNING=1
     ports:
       - "8080:8080"
     depends_on:
       db_test:
         condition: service_healthy
+
+  redis:
+    image: redis
+    container_name: 'redis-server'
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: [ "redis-server"]

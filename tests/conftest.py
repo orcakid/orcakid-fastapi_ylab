@@ -1,11 +1,13 @@
+import os
+
 import pytest
 from fastapi.testclient import TestClient
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
+
 from database import db_init
 from main import app
-import os
 
 
 def ini():
@@ -18,6 +20,7 @@ def ini():
 
 @pytest.fixture(scope='module')
 def client():
+    ini()
     db_init()
     client = TestClient(app=app)
     yield client

@@ -2,15 +2,10 @@ from fastapi import status
 
 id_cur_menu = []
 
-# def test_get_all_menus(client):
-#     response = client.get('/api/v1/menus')
-#     assert response.json() == []
 
-
-# def test_one_menu(client):
-#     response = client.get('/api/v1/menus/0')
-#     assert response.json() == {'detail': 'menu not found'}
-#     assert response.status_code == status.HTTP_404_NOT_FOUND
+def test_get_all_menus(client):
+    response = client.get('/api/v1/menus')
+    assert response.json() == []
 
 
 def test_create_menu(client):
@@ -26,10 +21,13 @@ def test_create_menu(client):
     id_cur_menu.append(resp['id'])
 
 
-# def test_one_menu1(client):
-#     response = client.get('/api/v1/menus/0')
-#     assert response.json() == {'detail': 'menu not found'}
-#     assert response.status_code == status.HTTP_404_NOT_FOUND
+def test_one_menu1(client):
+    response = client.get(f'/api/v1/menus/{id_cur_menu[0]}')
+    resp = response.json()
+    assert resp['title'] == 'My menu 1'
+    assert resp['id'].isdigit()
+    assert resp['description'] == 'My menu description 1'
+    assert response.status_code == status.HTTP_200_OK
 
 
 def test_patch_menu(client):
@@ -69,9 +67,6 @@ def test_create_menu2(client):
     id_cur_menu.append(resp['id'])
 
 
-# def test_get_sub(client):
-#     response = client.get('/api/v1/menus/0/submenus')
-#     assert response.json() == []
 id_submenu = []
 
 
@@ -95,6 +90,16 @@ def test_patch_submenu(client):
             'title': 'My updated submenu 1',
             'description': 'My updated submenu description 1',
         },
+    )
+    res = response.json()
+    assert res['title'] == 'My updated submenu 1'
+    assert res['description'] == 'My updated submenu description 1'
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_get_one_sub(client):
+    response = client.get(
+        f'/api/v1/menus/{id_cur_menu[0]}/submenus/{id_submenu[0]}',
     )
     res = response.json()
     assert res['title'] == 'My updated submenu 1'
@@ -161,6 +166,24 @@ def test_patch_dish(client):
     assert res['description'] == 'My updated disch description 1'
     assert res['price'] == '12.5'
     assert response.status_code == status.HTTP_200_OK
+
+
+def test_delete_dish2(client):
+    response = client.delete(
+        f'/api/v1/menus/{id_cur_menu[0]}/submenus/{id_submenu[0]}/dishes/{id_dish[0]}',
+    )
+    assert response.json() == {
+        'status': True,
+        'message': 'The dish has been deleted',
+    }
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_get_all_dish(client):
+    response = client.get(
+        f'/api/v1/menus/{id_cur_menu[0]}/submenus/{id_submenu[0]}/dishes',
+    )
+    assert response.json() == []
 
 
 def test_delete_menu3(client):
