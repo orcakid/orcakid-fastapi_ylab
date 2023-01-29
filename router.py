@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, status
 from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
-import db_request as crud2
+import db_crud as crud2
 from database import get_db
 from schemas import (
     BaseDish, BaseMenu, BaseSubmenu, CreateDish, CreateMenu,
