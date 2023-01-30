@@ -14,8 +14,6 @@ COPY . ./app
 
 EXPOSE 8000
 
-#CMD ["python", "create_db.py"]
-
 
 
 

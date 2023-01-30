@@ -4,10 +4,8 @@ _______
 + Создайте виртуальную среду: python -m venv venv
 + Активируйте ее: venv/Scripts/activate
 + Затем установите зависимости: pip install -r requirements.txt
-+ Создайте в корневой директории файл ".env" для ваших переменных окружения: New-Item -Path . -Name ".env" -ItemType "file"
++ Создайте в корневой директории файл ".env" для ваших переменных окружения
 + Заполните этот файл скопировав следущее:
-   + #для контейнеров
-
    + DB_USER=postgres
    + DB_PASSWORD=orca123
    + DB_NAME=y_lab_fastapi
@@ -29,10 +27,8 @@ _______
 + Create your env: python -m venv venv
 + Activate this: venv/Scripts/activate
 + Then install requirements: pip install -r requirements.txt
-+ Create file ".env" on this directory: New-Item -Path . -Name ".env" -ItemType "file"
++ Create file ".env" on this directory
 + Fill this file:
-   + #for containers
-
    + DB_USER=postgres
    + DB_PASSWORD=orca123
    + DB_NAME=y_lab_fastapi
