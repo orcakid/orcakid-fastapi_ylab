@@ -26,19 +26,18 @@ def count_submenu(db: Session, id) -> list[schemas.BaseSubmenu]:
     return db.query(Submenu).filter(Submenu.menu_id == id).all()
 
 
-def create_menu_table(menu: schemas.CreateMenu, count_sub) -> Menu:
+def create_menu_table(menu: schemas.CreateMenu) -> Menu:
     """Создает обьект меню"""
     new_menu = Menu(
         title=menu.title,
         description=menu.description,
-        submenus_count=len(count_sub),
     )
     return new_menu
 
 
-def chehing_exist(db: Session, id, new_menu: Menu) -> Menu:
+def chehing_exist(db: Session, title_menu, new_menu: Menu) -> Menu:
     """Проверяет на существование одинакового меню и добавляет"""
-    menu_db = db.query(Menu).filter(Menu.id == id).first()
+    menu_db = db.query(Menu).filter(Menu.title == title_menu).first()
     if menu_db is None:
         db.add(new_menu)
         db.commit()
@@ -52,13 +51,16 @@ def chehing_exist(db: Session, id, new_menu: Menu) -> Menu:
 
 def create_menu(db: Session, menu: schemas.CreateMenu) -> schemas.BaseMenu:
     """Создает меню в базе данных"""
-    count_sub = count_submenu(db, menu.id)
-    new_menu = create_menu_table(menu=menu, count_sub=count_sub)
-    check = chehing_exist(db=db, id=menu.id, new_menu=new_menu)
+    new_menu = create_menu_table(menu=menu)
+    check = chehing_exist(db=db, title_menu=menu.title, new_menu=new_menu)
     return check
 
 
-def update_menu(db: Session, menu_id: int, menu: schemas.PatchMenu) -> schemas.BaseMenu:
+def update_menu(
+    db: Session,
+    menu_id: int,
+    menu: schemas.CreateMenu,
+) -> schemas.BaseMenu:
     """Обновляет меню по id"""
     menu_to_update = get_menu(db=db, menu_id=menu_id)
     if menu_to_update:
@@ -116,7 +118,6 @@ def count_dish_for_submenu(db: Session, id_sub) -> list[schemas.BaseDish]:
 
 
 def create_submenu_table(
-    db: Session,
     menu_id: int,
     sub: schemas.CreateSubmenu,
 ) -> Submenu:
@@ -125,14 +126,13 @@ def create_submenu_table(
         title=sub.title,
         description=sub.description,
         menu_id=menu_id,
-        # dishes_count=len(count_dish_for_submenu(models_schemas=models_schemas, id_sub=sub.id))
     )
     return new_submenu
 
 
-def checking_submenu(db: Session, id, new_submenu) -> schemas.BaseSubmenu:
+def checking_submenu(db: Session, sub_title, new_submenu) -> schemas.BaseSubmenu:
     """Проверка на существование такого же подменю и добавление его в бд"""
-    db_sub = db.query(Submenu).filter(Submenu.id == id).first()
+    db_sub = db.query(Submenu).filter(Submenu.title == sub_title).first()
     if db_sub is None:
         db.add(new_submenu)
         db.commit()
@@ -150,12 +150,12 @@ def create_submenu(
     sub: schemas.CreateSubmenu,
 ) -> schemas.BaseSubmenu:
     """Создание подменю в бвзе данных"""
-    new_submenu = create_submenu_table(db=db, menu_id=menu_id, sub=sub)
+    new_submenu = create_submenu_table(menu_id=menu_id, sub=sub)
     menu = db.query(Menu).filter(Menu.id == menu_id).first()
     if menu:
         submenu = checking_submenu(
             db=db,
-            id=new_submenu.id,
+            sub_title=new_submenu.title,
             new_submenu=new_submenu,
         )
         # учет количества сабменю в данном меню
@@ -172,7 +172,7 @@ def update_submenu(
     db: Session,
     menu_id: int,
     submenu_id: int,
-    submenu: schemas.PatchSubmenu,
+    submenu: schemas.CreateSubmenu,
 ) -> schemas.BaseSubmenu:
     """Обновление подменю по id меню и подменю"""
     submenu_to_update = get_one_submenu_by_id(
@@ -327,7 +327,7 @@ def update_dish(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
-    dish: schemas.BaseDish,
+    dish: schemas.CreateDish,
 ) -> schemas.BaseDish:
     """Обновление блюда по id меню, подменю и блюда"""
     dish_for_update = get_one_dishes(

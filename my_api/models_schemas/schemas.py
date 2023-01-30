@@ -12,12 +12,7 @@ class BaseMenu(BaseModel):
         orm_mode = True
 
 
-class CreateMenu(BaseMenu):
-    title: str
-    description: str
-
-
-class PatchMenu(BaseMenu):
+class CreateMenu(BaseModel):
     title: str
     description: str
 
@@ -32,14 +27,12 @@ class BaseSubmenu(BaseModel):
         orm_mode = True
 
 
-class CreateSubmenu(BaseSubmenu):
+class CreateSubmenu(BaseModel):
     title: str | None
     description: str | None
 
-
-class PatchSubmenu(BaseSubmenu):
-    title: str | None
-    description: str | None
+    class Config:
+        orm_mode = True
 
 
 class BaseDish(BaseModel):
@@ -52,7 +45,7 @@ class BaseDish(BaseModel):
         orm_mode = True
 
 
-class CreateDish(BaseDish):
+class CreateDish(BaseModel):
     title: str
     description: str
     price: str | None

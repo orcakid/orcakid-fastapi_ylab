@@ -54,7 +54,7 @@ def create_menu(menu: schemas.CreateMenu, db: Session = Depends(get_db)):
     summary="Обновляет меню",
     tags=["Menu"],
 )
-def update_menu(menu_id: int, menu: schemas.PatchMenu, db: Session = Depends(get_db)):
+def update_menu(menu_id: int, menu: schemas.CreateMenu, db: Session = Depends(get_db)):
     return crud2.update_menu(db=db, menu=menu, menu_id=menu_id)
 
 
@@ -108,7 +108,7 @@ def get_one_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)
 )
 def create_submenu_rout(
     menu_id: int,
-    sub: schemas.BaseSubmenu,
+    sub: schemas.CreateSubmenu,
     db: Session = Depends(get_db),
 ):
     return crud2.create_submenu(db=db, menu_id=menu_id, sub=sub)
@@ -124,7 +124,7 @@ def create_submenu_rout(
 def update_submenu(
     menu_id: int,
     submenu_id: int,
-    sub: schemas.PatchSubmenu,
+    sub: schemas.CreateSubmenu,
     db: Session = Depends(get_db),
 ):
     return crud2.update_submenu(
@@ -209,7 +209,7 @@ def update_dish(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
-    dish: schemas.BaseDish,
+    dish: schemas.CreateDish,
     db: Session = Depends(get_db),
 ):
     return crud2.update_dish(
