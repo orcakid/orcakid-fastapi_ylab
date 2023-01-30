@@ -6,15 +6,11 @@ repos:
     -   id: debug-statements
     -   id: trailing-whitespace
     -   id: check-merge-conflict
-    -   id: double-quote-string-fixer
     -   id: check-byte-order-marker
     -   id: detect-private-key
     -   id: check-ast
+    -   id: check-case-conflict
 
-  # - repo: https://github.com/psf/black
-  #   rev: 22.10.0
-  #   hooks:
-  #   -   id: black
 
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v2.4.0
@@ -26,19 +22,32 @@ repos:
     hooks:
     -   id: pyupgrade
         args: [--py311-plus]
+
   - repo: https://github.com/pycqa/isort
     rev: 5.5.2
     hooks:
       - id: isort
         exclude: __init__.py
-        #args: [black, --filter-files]
   - repo: https://github.com/PyCQA/flake8
     rev: 6.0.0
     hooks:
     -   id: flake8
         exclude: __init__.py
         args: ["--ignore=E501,F821,F401,F811"]
+
+  - repo: https://github.com/asottile/yesqa
+    rev: v1.4.0
+    hooks:
+    -   id: yesqa
+
+
+
   - repo: https://github.com/pre-commit/mirrors-autopep8
     rev: v2.0.1
     hooks:
     -   id: autopep8
+
+  - repo: https://github.com/psf/black
+    rev: 22.10.0
+    hooks:
+    -   id: black

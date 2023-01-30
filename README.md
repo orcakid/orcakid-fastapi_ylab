@@ -20,6 +20,7 @@ ______
 ______
 #Запуск контейнера с приложением
 + Чтобы запустить контейнеры с приложением и бд используйте: docker-compose up -d
++ Документация опенапи: http://127.0.0.1:8000/my_api/openapi.json
 ______
 #Запуск контейнеров с тестами
 + Для контейнера с тестами используйте: docker-compose -f"docker-compose.test.yaml" up
@@ -44,6 +45,7 @@ ______
 _______
 #Run container with app
 + For container with app and db: docker-compose up -d
++ documentation openapi: http://127.0.0.1:8000/my_api/openapi.json
 _______
 #Run container with tests
 + For container with tests: docker-compose -f"docker-compose.test.yaml" up

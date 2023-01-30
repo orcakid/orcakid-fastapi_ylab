@@ -1,10 +1,8 @@
-from typing import Optional
-
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BaseMenu(BaseModel):
-    id: str | None
+    id: str | None = Field(default=0)
     title: str | None
     description: str | None
     dishes_count: int | None
@@ -26,7 +24,7 @@ class PatchMenu(BaseMenu):
 
 
 class BaseSubmenu(BaseModel):
-    id: str | None
+    id: str | None = Field(default=0)
     title: str | None
     description: str | None
     dishes_count: int | None
@@ -46,7 +44,7 @@ class PatchSubmenu(BaseSubmenu):
 
 
 class BaseDish(BaseModel):
-    id: str | None
+    id: str | None = Field(default=0)
     title: str | None
     description: str | None
     price: str | None
