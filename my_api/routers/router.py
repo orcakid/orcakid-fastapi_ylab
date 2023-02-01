@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
 
-from my_api.cruds_op import db_crud as crud2
-from my_api.db.database import get_db
 from my_api.models_schemas import schemas
+
+from ..service.operations import DishCrud, MenuCrud, SubmenuCrud
 
 router = APIRouter()
 
@@ -15,9 +14,8 @@ router = APIRouter()
     summary="Возвращает список всех меню",
     tags=["Menu"],
 )
-def get_menus(db: Session = Depends(get_db)):
-    menu = crud2.get_list_menu(db=db)
-    return menu
+def get_menus(service: MenuCrud = Depends()):
+    return service.get_list_menu()
 
 
 @router.get(
@@ -27,9 +25,8 @@ def get_menus(db: Session = Depends(get_db)):
     summary="Поиск меню по id",
     tags=["Menu"],
 )
-def get_one_menu(menu_id: int, db: Session = Depends(get_db)):
-    menu = crud2.get_menu(db=db, menu_id=menu_id)
-    return menu
+def get_one_menu(menu_id: int, service: MenuCrud = Depends()):
+    return service.get_one_menu(menu_id=menu_id)
 
 
 @router.post(
@@ -40,8 +37,8 @@ def get_one_menu(menu_id: int, db: Session = Depends(get_db)):
     summary="Создает меню",
     tags=["Menu"],
 )
-def create_menu(menu: schemas.CreateMenu, db: Session = Depends(get_db)):
-    return crud2.create_menu(db=db, menu=menu)
+def create_menu(menu: schemas.CreateMenu, service: MenuCrud = Depends()):
+    return service.create_menu(menu=menu)
 
 
 @router.patch(
@@ -51,8 +48,8 @@ def create_menu(menu: schemas.CreateMenu, db: Session = Depends(get_db)):
     summary="Обновляет меню",
     tags=["Menu"],
 )
-def update_menu(menu_id: int, menu: schemas.CreateMenu, db: Session = Depends(get_db)):
-    return crud2.update_menu(db=db, menu=menu, menu_id=menu_id)
+def update_menu(menu_id: int, menu: schemas.CreateMenu, service: MenuCrud = Depends()):
+    return service.update_menu(menu_id=menu_id, menu=menu)
 
 
 @router.delete(
@@ -61,8 +58,8 @@ def update_menu(menu_id: int, menu: schemas.CreateMenu, db: Session = Depends(ge
     tags=["Menu"],
     summary="Удаляет меню",
 )
-def delete_menu(menu_id: int, db: Session = Depends(get_db)):
-    return crud2.delete_menu(db=db, menu_id=menu_id)
+def delete_menu(menu_id: int, service: MenuCrud = Depends()):
+    return service.delete_menu(menu_id=menu_id)
 
 
 @router.get(
@@ -72,9 +69,8 @@ def delete_menu(menu_id: int, db: Session = Depends(get_db)):
     summary="Возвращает список всех подменю определенного меню",
     tags=["Subenu"],
 )
-def get_list_submenu(menu_id: int, db: Session = Depends(get_db)):
-    submenu = crud2.get_submenu_list(db=db, menu_id=menu_id)
-    return submenu
+def get_list_submenu(menu_id: int, service: SubmenuCrud = Depends()):
+    return service.get_submenu_list(menu_id=menu_id)
 
 
 @router.get(
@@ -84,13 +80,8 @@ def get_list_submenu(menu_id: int, db: Session = Depends(get_db)):
     summary="Подменю по id меню и подменню",
     tags=["Subenu"],
 )
-def get_one_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
-    submenu = crud2.get_one_submenu_by_id(
-        db=db,
-        menu_id=menu_id,
-        submenu_id=submenu_id,
-    )
-    return submenu
+def get_one_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+    return service.get_one_submenu_by_id(menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.post(
@@ -104,9 +95,9 @@ def get_one_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)
 def create_submenu_rout(
     menu_id: int,
     sub: schemas.CreateSubmenu,
-    db: Session = Depends(get_db),
+    service: SubmenuCrud = Depends(),
 ):
-    return crud2.create_submenu(db=db, menu_id=menu_id, sub=sub)
+    return service.create_submenu(menu_id=menu_id, sub=sub)
 
 
 @router.patch(
@@ -120,14 +111,9 @@ def update_submenu(
     menu_id: int,
     submenu_id: int,
     sub: schemas.CreateSubmenu,
-    db: Session = Depends(get_db),
+    service: SubmenuCrud = Depends(),
 ):
-    return crud2.update_submenu(
-        db=db,
-        submenu_id=submenu_id,
-        menu_id=menu_id,
-        submenu=sub,
-    )
+    return service.update_submenu(menu_id=menu_id, submenu=sub, submenu_id=submenu_id)
 
 
 @router.delete(
@@ -136,8 +122,8 @@ def update_submenu(
     summary="Удаляет подменю",
     tags=["Subenu"],
 )
-def delete_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
-    return crud2.delete_submenu(db=db, menu_id=menu_id, submenu_id=submenu_id)
+def delete_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+    return service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
 
 
 @router.get(
@@ -147,9 +133,8 @@ def delete_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db))
     summary="Возвращает список всех блюд по id меню и подменю",
     tags=["Dish"],
 )
-def get_dishes_list(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
-    dish = crud2.get_all_dishes(db=db, menu_id=menu_id, submenu_id=submenu_id)
-    return dish
+def get_dishes_list(menu_id: int, submenu_id: int, service: DishCrud = Depends()):
+    return service.get_all_dishes(menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.get(
@@ -163,15 +148,13 @@ def get_one_dishes(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
-    db: Session = Depends(get_db),
+    service: DishCrud = Depends(),
 ):
-    dish = crud2.get_one_dishes(
-        db=db,
+    return service.get_one_dishes(
+        submenu_id=submenu_id,
         dish_id=dish_id,
         menu_id=menu_id,
-        submenu_id=submenu_id,
     )
-    return dish
 
 
 @router.post(
@@ -186,9 +169,9 @@ def create_dish(
     menu_id: int,
     submenu_id: int,
     dish: schemas.CreateDish,
-    db: Session = Depends(get_db),
+    service: DishCrud = Depends(),
 ):
-    return crud2.create_dish(db=db, menu_id=menu_id, submenu_id=submenu_id, dish=dish)
+    return service.create_dish(menu_id=menu_id, dish=dish, submenu_id=submenu_id)
 
 
 @router.patch(
@@ -203,14 +186,13 @@ def update_dish(
     submenu_id: int,
     dish_id: int,
     dish: schemas.CreateDish,
-    db: Session = Depends(get_db),
+    service: DishCrud = Depends(),
 ):
-    return crud2.update_dish(
-        db=db,
-        menu_id=menu_id,
+    return service.update_dish(
         submenu_id=submenu_id,
-        dish_id=dish_id,
+        menu_id=menu_id,
         dish=dish,
+        dish_id=dish_id,
     )
 
 
@@ -224,11 +206,6 @@ def delete_dish(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
-    db: Session = Depends(get_db),
+    service: DishCrud = Depends(),
 ):
-    return crud2.delete_dish(
-        db=db,
-        menu_id=menu_id,
-        submenu_id=submenu_id,
-        dish_id=dish_id,
-    )
+    return service.delete_dish(submenu_id=submenu_id, menu_id=menu_id, dish_id=dish_id)
