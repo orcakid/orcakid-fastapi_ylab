@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from my_api.cruds_op import cache_operations as cache
 from my_api.cruds_op import db_crud as crud2
 from my_api.db.database import get_db
 from my_api.models_schemas import schemas
@@ -18,7 +17,6 @@ router = APIRouter()
 )
 def get_menus(db: Session = Depends(get_db)):
     menu = crud2.get_list_menu(db=db)
-    cache.cache_list_item(array=menu, type="list_menu")
     return menu
 
 
@@ -31,7 +29,6 @@ def get_menus(db: Session = Depends(get_db)):
 )
 def get_one_menu(menu_id: int, db: Session = Depends(get_db)):
     menu = crud2.get_menu(db=db, menu_id=menu_id)
-    cache.cache_item(id_item=menu_id, item=menu, type="menu")
     return menu
 
 
@@ -77,7 +74,6 @@ def delete_menu(menu_id: int, db: Session = Depends(get_db)):
 )
 def get_list_submenu(menu_id: int, db: Session = Depends(get_db)):
     submenu = crud2.get_submenu_list(db=db, menu_id=menu_id)
-    cache.cache_list_item(array=submenu, type="list_submenu")
     return submenu
 
 
@@ -94,7 +90,6 @@ def get_one_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db)
         menu_id=menu_id,
         submenu_id=submenu_id,
     )
-    cache.cache_item(id_item=submenu_id, item=submenu, type="submenu")
     return submenu
 
 
@@ -154,7 +149,6 @@ def delete_submenu(menu_id: int, submenu_id: int, db: Session = Depends(get_db))
 )
 def get_dishes_list(menu_id: int, submenu_id: int, db: Session = Depends(get_db)):
     dish = crud2.get_all_dishes(db=db, menu_id=menu_id, submenu_id=submenu_id)
-    cache.cache_list_item(array=dish, type="list_dish")
     return dish
 
 
@@ -177,7 +171,6 @@ def get_one_dishes(
         menu_id=menu_id,
         submenu_id=submenu_id,
     )
-    cache.cache_item(item=dish, id_item=dish_id, type="dish")
     return dish
 
 

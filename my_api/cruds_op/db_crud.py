@@ -1,13 +1,16 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
+from my_api.cruds_op import cache_operations as cache
 from my_api.models_schemas import schemas
 from my_api.models_schemas.models import Dish, Menu, Submenu
 
 
 def get_list_menu(db: Session) -> list[schemas.BaseMenu]:
     """Возвращает список всех меню1"""
-    return db.query(Menu).all()
+    menu = db.query(Menu).all()
+    cache.cache_list_item(array=menu, type="list_menu")
+    return menu
 
 
 def get_menu(db: Session, menu_id: int) -> schemas.BaseMenu:
@@ -18,6 +21,7 @@ def get_menu(db: Session, menu_id: int) -> schemas.BaseMenu:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="menu not found",
         )
+    cache.cache_item(id_item=menu_id, item=menu, type="menu")
     return menu
 
 
@@ -103,12 +107,14 @@ def get_one_submenu_by_id(
             detail="submenu not found",
         )
     else:
+        cache.cache_item(id_item=submenu_id, item=one_submenu, type="submenu")
         return one_submenu
 
 
 def get_submenu_list(db: Session, menu_id: int) -> list[schemas.BaseSubmenu]:
     """Возврашает список всех подменю по id меню"""
     all_s_menu = db.query(Submenu).filter(Submenu.menu_id == menu_id).all()
+    cache.cache_list_item(array=all_s_menu, type="list_submenu")
     return all_s_menu
 
 
@@ -230,6 +236,7 @@ def get_all_dishes(
         .filter(Dish.submenu_id == submenu_id)
         .all()
     )
+    cache.cache_list_item(array=dish, type="list_dish")
     return dish if dish else []
 
 
@@ -239,7 +246,7 @@ def get_one_dishes(
     submenu_id: int,
     dish_id: int,
 ) -> schemas.BaseDish:
-    """Возвращает конкретное меню по id меню, подменю и блюда"""
+    """Возвращает конкретное блюдо по id меню, подменю и блюда"""
     dish = (
         db.query(Dish)
         .join(Submenu, Submenu.id == Dish.submenu_id)
@@ -256,6 +263,7 @@ def get_one_dishes(
             detail="dish not found",
         )
     else:
+        cache.cache_item(item=dish, id_item=dish_id, type="dish")
         return dish
 
 
