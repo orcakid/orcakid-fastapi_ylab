@@ -39,6 +39,7 @@ class Dish(BASE):
     title = Column(String(200))
     description = Column(String)
     price = Column(Float(round(2)))
+    #price = Column(String())
     submenu_id = Column(Integer, ForeignKey("submenu.id"))
     menu_id = Column(Integer, ForeignKey("menu.id"))
     submenus1 = relationship("Submenu", back_populates="dishes")

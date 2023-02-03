@@ -14,8 +14,8 @@ router = APIRouter()
     summary="Возвращает список всех меню",
     tags=["Menu"],
 )
-def get_menus(service: MenuCrud = Depends()):
-    return service.get_list_menu()
+async def get_menus(service: MenuCrud = Depends()):
+    return await service.get_list()
 
 
 @router.get(
@@ -25,8 +25,8 @@ def get_menus(service: MenuCrud = Depends()):
     summary="Поиск меню по id",
     tags=["Menu"],
 )
-def get_one_menu(menu_id: int, service: MenuCrud = Depends()):
-    return service.get_one_menu(menu_id=menu_id)
+async def get_one_menu(menu_id: int, service: MenuCrud = Depends()):
+    return await service.get_one_menu(menu_id=menu_id)
 
 
 @router.post(
@@ -37,8 +37,8 @@ def get_one_menu(menu_id: int, service: MenuCrud = Depends()):
     summary="Создает меню",
     tags=["Menu"],
 )
-def create_menu(menu: schemas.CreateMenu, service: MenuCrud = Depends()):
-    return service.create_menu(menu=menu)
+async def create_menu(menu: schemas.CreateMenu, service: MenuCrud = Depends()):
+    return await service.create_menu(menu=menu)
 
 
 @router.patch(
@@ -48,8 +48,8 @@ def create_menu(menu: schemas.CreateMenu, service: MenuCrud = Depends()):
     summary="Обновляет меню",
     tags=["Menu"],
 )
-def update_menu(menu_id: int, menu: schemas.CreateMenu, service: MenuCrud = Depends()):
-    return service.update_menu(menu_id=menu_id, menu=menu)
+async def update_menu(menu_id: int, menu: schemas.CreateMenu, service: MenuCrud = Depends()):
+    return await service.update_menu(menu_id=menu_id, menu=menu)
 
 
 @router.delete(
@@ -58,8 +58,8 @@ def update_menu(menu_id: int, menu: schemas.CreateMenu, service: MenuCrud = Depe
     tags=["Menu"],
     summary="Удаляет меню",
 )
-def delete_menu(menu_id: int, service: MenuCrud = Depends()):
-    return service.delete_menu(menu_id=menu_id)
+async def delete_menu(menu_id: int, service: MenuCrud = Depends()):
+    return await service.delete_menu(menu_id=menu_id)
 
 
 @router.get(
@@ -69,8 +69,8 @@ def delete_menu(menu_id: int, service: MenuCrud = Depends()):
     summary="Возвращает список всех подменю определенного меню",
     tags=["Subenu"],
 )
-def get_list_submenu(menu_id: int, service: SubmenuCrud = Depends()):
-    return service.get_submenu_list(menu_id=menu_id)
+async def get_list_submenu(menu_id: int, service: SubmenuCrud = Depends()):
+    return await service.get_submenu_list(menu_id=menu_id)
 
 
 @router.get(
@@ -80,8 +80,8 @@ def get_list_submenu(menu_id: int, service: SubmenuCrud = Depends()):
     summary="Подменю по id меню и подменню",
     tags=["Subenu"],
 )
-def get_one_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
-    return service.get_one_submenu_by_id(menu_id=menu_id, submenu_id=submenu_id)
+async def get_one_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+    return await service.get_one_submenu_by_id(menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.post(
@@ -92,12 +92,12 @@ def get_one_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depend
     summary="Создает подменю",
     tags=["Subenu"],
 )
-def create_submenu_rout(
+async def create_submenu_rout(
     menu_id: int,
     sub: schemas.CreateSubmenu,
     service: SubmenuCrud = Depends(),
 ):
-    return service.create_submenu(menu_id=menu_id, sub=sub)
+    return await service.create_submenu(menu_id=menu_id, sub=sub)
 
 
 @router.patch(
@@ -107,13 +107,13 @@ def create_submenu_rout(
     summary="Обновляет подменю",
     tags=["Subenu"],
 )
-def update_submenu(
+async def update_submenu(
     menu_id: int,
     submenu_id: int,
     sub: schemas.CreateSubmenu,
     service: SubmenuCrud = Depends(),
 ):
-    return service.update_submenu(menu_id=menu_id, submenu=sub, submenu_id=submenu_id)
+    return await service.update_submenu(menu_id=menu_id, submenu=sub, submenu_id=submenu_id)
 
 
 @router.delete(
@@ -122,8 +122,8 @@ def update_submenu(
     summary="Удаляет подменю",
     tags=["Subenu"],
 )
-def delete_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
-    return service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
+async def delete_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+    return await service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
 
 
 @router.get(
@@ -133,8 +133,8 @@ def delete_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends
     summary="Возвращает список всех блюд по id меню и подменю",
     tags=["Dish"],
 )
-def get_dishes_list(menu_id: int, submenu_id: int, service: DishCrud = Depends()):
-    return service.get_all_dishes(menu_id=menu_id, submenu_id=submenu_id)
+async def get_dishes_list(menu_id: int, submenu_id: int, service: DishCrud = Depends()):
+    return await service.get_all_dishes(menu_id=menu_id, submenu_id=submenu_id)
 
 
 @router.get(
@@ -144,13 +144,13 @@ def get_dishes_list(menu_id: int, submenu_id: int, service: DishCrud = Depends()
     summary="Возвращает блюдо по id",
     tags=["Dish"],
 )
-def get_one_dishes(
+async def get_one_dishes(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
     service: DishCrud = Depends(),
 ):
-    return service.get_one_dishes(
+    return await service.get_one_dishes(
         submenu_id=submenu_id,
         dish_id=dish_id,
         menu_id=menu_id,
@@ -165,13 +165,13 @@ def get_one_dishes(
     summary="Создание блюда",
     tags=["Dish"],
 )
-def create_dish(
+async def create_dish(
     menu_id: int,
     submenu_id: int,
     dish: schemas.CreateDish,
     service: DishCrud = Depends(),
 ):
-    return service.create_dish(menu_id=menu_id, dish=dish, submenu_id=submenu_id)
+    return await service.create_dish(menu_id=menu_id, dish=dish, submenu_id=submenu_id)
 
 
 @router.patch(
@@ -181,14 +181,14 @@ def create_dish(
     summary="Обновляет блюдо",
     tags=["Dish"],
 )
-def update_dish(
+async def update_dish(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
     dish: schemas.CreateDish,
     service: DishCrud = Depends(),
 ):
-    return service.update_dish(
+    return await service.update_dish(
         submenu_id=submenu_id,
         menu_id=menu_id,
         dish=dish,
@@ -202,10 +202,10 @@ def update_dish(
     summary="удаляет блюдо",
     tags=["Dish"],
 )
-def delete_dish(
+async def delete_dish(
     menu_id: int,
     submenu_id: int,
     dish_id: int,
     service: DishCrud = Depends(),
 ):
-    return service.delete_dish(submenu_id=submenu_id, menu_id=menu_id, dish_id=dish_id)
+    return await service.delete_dish(submenu_id=submenu_id, menu_id=menu_id, dish_id=dish_id)

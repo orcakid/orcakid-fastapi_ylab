@@ -15,6 +15,9 @@ class BaseMenu(BaseModel):
 class CreateMenu(BaseModel):
     title: str
     description: str
+    
+    class Config:
+        orm_mode = True
 
 
 class BaseSubmenu(BaseModel):
@@ -49,3 +52,6 @@ class CreateDish(BaseModel):
     title: str
     description: str
     price: str | None
+    
+    class Config:
+        orm_mode = True
