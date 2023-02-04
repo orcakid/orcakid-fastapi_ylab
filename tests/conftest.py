@@ -1,12 +1,16 @@
+from httpx import AsyncClient
 import pytest
-from fastapi.testclient import TestClient
-
-from my_api.db.database import db_init
 from my_api.main import app
+import pytest_asyncio
+
+import asyncio
 
 
-@pytest.fixture(scope="module")
-def client():
-    db_init()
-    client = TestClient(app=app)
-    yield client
+@pytest.fixture(scope="session")
+def event_loop():
+    return asyncio.get_event_loop()
+
+@pytest_asyncio.fixture(scope="session")
+async def async_app_client():
+    async with AsyncClient(app=app, base_url='http://test') as client:
+        yield client

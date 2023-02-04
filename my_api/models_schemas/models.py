@@ -6,6 +6,7 @@ from my_api.db.database import BASE
 
 class Menu(BASE):
     __tablename__ = "menu"
+    
     id = Column(Integer(), primary_key=True)
     title = Column(String(200), nullable=False)
     description = Column(String())

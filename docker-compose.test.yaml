@@ -22,7 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: pytest -vv tests/tester_menu.py
+    command: sh -c "alembic upgrade head && pytest -vv tests/tester_menu.py"
     volumes:
       - .:/app
     environment:
