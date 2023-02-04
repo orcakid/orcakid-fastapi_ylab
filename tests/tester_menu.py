@@ -1,11 +1,12 @@
+import pytest
 from fastapi import status
-#from httpx import AsyncClient
-#import pytest
+
+# from httpx import AsyncClient
+# import pytest
 from my_api.main import app
 
 # id_cur_menu = []
 
-import pytest
 
 @pytest.mark.asyncio
 async def test_get_list_menu(async_app_client):
@@ -19,7 +20,7 @@ async def test_root(async_app_client):
     response = await async_app_client.post("/api/v1/menus", json=data)
     assert response.status_code == 201
     r = response.json()
-    assert r['title'] == "My menu 1"
+    assert r["title"] == "My menu 1"
 
 
 @pytest.mark.asyncio
@@ -30,6 +31,7 @@ async def test_delete_menu(async_app_client):
         "message": "The menu has been deleted",
     }
     assert response.status_code == status.HTTP_200_OK
+
 
 # @pytest.mark.asyncio
 # async def test_get_all_menus():
@@ -45,7 +47,7 @@ async def test_delete_menu(async_app_client):
 #     data = {"title": "My menu 1", "description": "My menu description 1"}
 #     async with AsyncClient(app=app) as ac:
 #         response = await ac.get("/api/v1/menus")
-    
+
 #     resp = response.json()
 #     assert resp == "My menu 1"
 #     # assert resp["id"].isdigit()

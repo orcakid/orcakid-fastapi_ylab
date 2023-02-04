@@ -6,7 +6,7 @@ from my_api.db.database import BASE
 
 class Menu(BASE):
     __tablename__ = "menu"
-    
+
     id = Column(Integer(), primary_key=True)
     title = Column(String(200), nullable=False)
     description = Column(String())
@@ -40,7 +40,7 @@ class Dish(BASE):
     title = Column(String(200))
     description = Column(String)
     price = Column(Float(round(2)))
-    #price = Column(String())
+    # price = Column(String())
     submenu_id = Column(Integer, ForeignKey("submenu.id"))
     menu_id = Column(Integer, ForeignKey("menu.id"))
     submenus1 = relationship("Submenu", back_populates="dishes")

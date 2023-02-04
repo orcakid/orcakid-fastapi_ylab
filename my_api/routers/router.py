@@ -4,7 +4,6 @@ from my_api.models_schemas import schemas
 
 from ..service.operations import DishCrud, MenuCrud, SubmenuCrud
 
-
 router = APIRouter()
 
 
@@ -49,7 +48,11 @@ async def create_menu(menu: schemas.CreateMenu, service: MenuCrud = Depends()):
     summary="Обновляет меню",
     tags=["Menu"],
 )
-async def update_menu(menu_id: int, menu: schemas.CreateMenu, service: MenuCrud = Depends()):
+async def update_menu(
+    menu_id: int,
+    menu: schemas.CreateMenu,
+    service: MenuCrud = Depends(),
+):
     return await service.update_menu(menu_id=menu_id, menu=menu)
 
 
@@ -81,7 +84,11 @@ async def get_list_submenu(menu_id: int, service: SubmenuCrud = Depends()):
     summary="Подменю по id меню и подменню",
     tags=["Subenu"],
 )
-async def get_one_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+async def get_one_submenu(
+    menu_id: int,
+    submenu_id: int,
+    service: SubmenuCrud = Depends(),
+):
     return await service.get_one_submenu_by_id(menu_id=menu_id, submenu_id=submenu_id)
 
 
@@ -114,7 +121,11 @@ async def update_submenu(
     sub: schemas.CreateSubmenu,
     service: SubmenuCrud = Depends(),
 ):
-    return await service.update_submenu(menu_id=menu_id, submenu=sub, submenu_id=submenu_id)
+    return await service.update_submenu(
+        menu_id=menu_id,
+        submenu=sub,
+        submenu_id=submenu_id,
+    )
 
 
 @router.delete(
@@ -123,7 +134,11 @@ async def update_submenu(
     summary="Удаляет подменю",
     tags=["Subenu"],
 )
-async def delete_submenu(menu_id: int, submenu_id: int, service: SubmenuCrud = Depends()):
+async def delete_submenu(
+    menu_id: int,
+    submenu_id: int,
+    service: SubmenuCrud = Depends(),
+):
     return await service.delete_submenu(submenu_id=submenu_id, menu_id=menu_id)
 
 
@@ -209,4 +224,8 @@ async def delete_dish(
     dish_id: int,
     service: DishCrud = Depends(),
 ):
-    return await service.delete_dish(submenu_id=submenu_id, menu_id=menu_id, dish_id=dish_id)
+    return await service.delete_dish(
+        submenu_id=submenu_id,
+        menu_id=menu_id,
+        dish_id=dish_id,
+    )
