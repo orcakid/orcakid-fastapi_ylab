@@ -1,4 +1,4 @@
-# Homework for ***Ylab***
+# Меню для ресторана
 _______
 + Склонируйте репозиторий: git clone https://github.com/orcakid/orcakid-fastapi_ylab.git .
 + Создайте виртуальную среду: python -m venv venv
